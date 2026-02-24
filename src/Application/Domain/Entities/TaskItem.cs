@@ -1,5 +1,7 @@
 using Application.Domain.ValueObjects;
 
+using NpgsqlTypes;
+
 namespace Application.Domain.Entities;
 
 public class TaskItem : BaseEntity
@@ -10,7 +12,7 @@ public class TaskItem : BaseEntity
     public DateTime? DueDate { get; set; }
     public DateTime? StartDate { get; set; }
 
-    public RecurrenceRule? Recurrence { get; set; }
+    public RecurrenceRule? RecurrenceRule { get; set; }
     public ICollection<Reminder> Reminders { get; set; } = [];
 
     public Guid? GoalId { get; set; }
@@ -24,4 +26,6 @@ public class TaskItem : BaseEntity
     public ICollection<TaskItem> SubTasks { get; set; } = [];
 
     public ICollection<Tag> Tags { get; set; } = [];
+
+    public NpgsqlTsVector SearchVector { get; set; } = default!;
 }
