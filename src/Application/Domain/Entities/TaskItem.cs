@@ -13,7 +13,7 @@ public class TaskItem : BaseEntity
     public RecurrenceRule? Recurrence { get; set; }
     public ICollection<Reminder> Reminders { get; set; } = [];
 
-    public Guid? GoalId { get; set; } 
+    public Guid? GoalId { get; set; }
     public Goal? Goal { get; set; }
 
     public Guid ProjectId { get; set; }
