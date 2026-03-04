@@ -4,7 +4,7 @@ namespace Application.Common.Extensions;
 
 public static class ClaimsPrincipalExtensions
 {
-    extension (ClaimsPrincipal principal)
+    extension(ClaimsPrincipal principal)
     {
         public string? GetEmail() =>
             principal.FindFirstValue(ClaimTypes.Email);

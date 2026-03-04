@@ -1,3 +1,5 @@
+using Domain.Enums;
+
 namespace Domain.ValueObjects;
 
 public class RecurrenceRule : ValueObject

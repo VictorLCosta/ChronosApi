@@ -40,7 +40,7 @@ public class CurrentUserService : ICurrentUserService
     {
         throw new NotImplementedException();
     }
-    
+
     public IEnumerable<Claim>? GetUserClaims() =>
         _user?.Claims;
 

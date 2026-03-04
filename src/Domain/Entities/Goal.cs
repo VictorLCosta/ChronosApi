@@ -1,5 +1,5 @@
-using Application.Domain.Enums;
-using Application.Domain.ValueObjects;
+using Domain.Enums;
+using Domain.ValueObjects;
 
 using NpgsqlTypes;
 
