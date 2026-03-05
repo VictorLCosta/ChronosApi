@@ -4,14 +4,13 @@ using Application.Common.Interfaces;
 
 using Domain.Entities;
 
-using Infrastructure.Persistence.Configurations;
-
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 namespace Infrastructure.Persistence;
 
-public class ApplicationDbContext(DbContextOptions options)
-    : BaseDbContext(options), IApplicationDbContext
+public class ApplicationDbContext(DbContextOptions options, IHostEnvironment environment)
+    : BaseDbContext(options, environment), IApplicationDbContext
 {
     public DbSet<Attachment> Attachments => Set<Attachment>();
 

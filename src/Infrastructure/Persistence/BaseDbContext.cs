@@ -1,18 +1,34 @@
 using System.Reflection;
 
+using Infrastructure.Identity;
+
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 namespace Infrastructure.Persistence;
 
-public abstract class BaseDbContext(DbContextOptions options)
-    : IdentityDbContext(options)
+public abstract class BaseDbContext(DbContextOptions options, IHostEnvironment environment)
+    : IdentityDbContext<
+        AppUser, 
+        AppRole, 
+        string, 
+        IdentityUserClaim<string>,
+        IdentityUserRole<string>,
+        IdentityUserLogin<string>,
+        AppRoleClaim,
+        IdentityUserToken<string>,
+        IdentityUserPasskey<string>
+    >(options)
 {
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-#if DEBUG
-        optionsBuilder.EnableSensitiveDataLogging();
-#endif
+        if (environment.IsDevelopment())
+        {
+            optionsBuilder.EnableSensitiveDataLogging();
+            optionsBuilder.EnableDetailedErrors();
+        }
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
