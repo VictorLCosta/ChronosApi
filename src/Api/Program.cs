@@ -1,24 +1,44 @@
+using Infrastructure;
+using Infrastructure.Logging;
+
 using Scalar.AspNetCore;
 
-var builder = WebApplication.CreateBuilder(args);
+using Serilog;
 
-builder.Services.AddOpenApi();
+StaticLogger.EnsureInitialized();
 
-var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
+try
 {
-    app.MapOpenApi();
-    app.MapScalarApiReference("api-docs", (opt) =>
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.Services.AddOpenApi();
+
+    builder.AddInfrastructure();
+
+    var app = builder.Build();
+
+    if (app.Environment.IsDevelopment())
     {
-        opt.Title = "Scalar API Reference";
-        opt.DarkMode = true;
-        opt.Theme = ScalarTheme.BluePlanet;
-        opt.DefaultHttpClient = new(ScalarTarget.CSharp, ScalarClient.HttpClient);
-        opt.ShowSidebar = true;
-    });
+        app.MapOpenApi();
+        app.MapScalarApiReference("api-docs", (opt) =>
+        {
+            opt.Title = "Scalar API Reference";
+            opt.DarkMode = true;
+            opt.Theme = ScalarTheme.BluePlanet;
+            opt.DefaultHttpClient = new(ScalarTarget.CSharp, ScalarClient.HttpClient);
+            opt.ShowSidebar = true;
+        });
+    }
+
+    app.UseInfrastructure();
+
+    await app.RunAsync();
 }
-
-app.UseHttpsRedirection();
-
-app.Run();
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Server terminated unexpectedly.");
+}
+finally
+{
+    await Log.CloseAndFlushAsync();
+}

@@ -1,4 +1,7 @@
+using Application.Common.Interfaces;
+
 using Infrastructure.Persistence;
+using Infrastructure.Services;
 
 using Microsoft.AspNetCore.Identity;
 
@@ -6,10 +9,12 @@ namespace Infrastructure.Identity;
 
 public static class Extensions
 {
-    extension (IServiceCollection services)
+    extension(IServiceCollection services)
     {
-        public IServiceCollection AddIdentity()
+        public IServiceCollection AddAppIdentity()
         {
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
+
             services.AddIdentity<AppUser, AppRole>(options =>
             {
                 options.Password.RequireDigit = false;

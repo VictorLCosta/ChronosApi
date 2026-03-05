@@ -2,7 +2,7 @@ namespace Application.Common.Interfaces;
 
 public interface IDbInitializer
 {
-     /// <summary>
+    /// <summary>
     /// Applies pending database migrations.
     /// </summary>
     /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>

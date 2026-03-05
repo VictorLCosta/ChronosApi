@@ -1,11 +1,12 @@
 using Application.Common.Interfaces;
 
+using Domain.Entities;
+using Domain.Enums;
+
 using Infrastructure.Identity;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Domain.Entities;
-using Domain.Enums;
 
 namespace Infrastructure.Persistence;
 
@@ -24,7 +25,7 @@ public class DbInitializer(
 
     public async Task SeedAsync(CancellationToken cancellationToken)
     {
-        await SeedUsersAsync(cancellationToken);       
+        await SeedUsersAsync(cancellationToken);
 
         // Seed some sample domain data if none exists
         if (!await context.Projects.AnyAsync(cancellationToken).ConfigureAwait(false))

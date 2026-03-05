@@ -1,6 +1,8 @@
 using Application.Common.Interfaces;
 
-namespace Api.Middlewares;
+using Microsoft.AspNetCore.Http;
+
+namespace Infrastructure.Middlewares;
 
 public class CurrentUserMiddleware(ICurrentUserService currentUserService) : IMiddleware
 {

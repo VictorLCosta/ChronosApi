@@ -11,9 +11,9 @@ namespace Infrastructure.Persistence;
 
 public abstract class BaseDbContext(DbContextOptions options, IHostEnvironment environment)
     : IdentityDbContext<
-        AppUser, 
-        AppRole, 
-        string, 
+        AppUser,
+        AppRole,
+        string,
         IdentityUserClaim<string>,
         IdentityUserRole<string>,
         IdentityUserLogin<string>,
