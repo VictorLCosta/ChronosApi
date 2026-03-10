@@ -1,7 +1,7 @@
 using System.Diagnostics;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 using Npgsql;
@@ -17,7 +17,7 @@ namespace Infrastructure.OpenTelemetry;
 
 public static class Extensions
 {
-    extension (IHostApplicationBuilder builder)
+    extension(IHostApplicationBuilder builder)
     {
         public IHostApplicationBuilder ConfigureOpenTelemetry()
         {

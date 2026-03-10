@@ -1,3 +1,4 @@
+using Infrastructure.Cors;
 using Infrastructure.Exceptions;
 using Infrastructure.Identity;
 using Infrastructure.Logging;
@@ -23,12 +24,14 @@ public static class Extensions
         builder.AddAppLogging();
 
         builder.ConfigureOpenTelemetry();
-        
+
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddPersistence(builder.Configuration);
         builder.Services.AddRateLimit(builder.Configuration);
 
         builder.Services.AddAppIdentity();
+
+        builder.Services.AddAppCors(builder.Configuration);
 
         builder.Services.AddProblemDetails(options => options.CustomizeProblemDetails = ctx =>
             {
@@ -50,6 +53,7 @@ public static class Extensions
 
         app.UseHttpsRedirection();
         app.UseRouting();
+        app.UseAppCors();
         app.UseRateLimit();
         app.UseExceptionHandler();
 
