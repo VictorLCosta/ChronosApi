@@ -1,3 +1,4 @@
+using Infrastructure.Exceptions;
 using Infrastructure.Identity;
 using Infrastructure.Logging;
 using Infrastructure.Middlewares;
@@ -29,7 +30,14 @@ public static class Extensions
 
         builder.Services.AddAppIdentity();
 
-        builder.Services.AddProblemDetails();
+        builder.Services.AddProblemDetails(options => options.CustomizeProblemDetails = ctx =>
+            {
+                ctx.ProblemDetails.Extensions["traceId"] = ctx.HttpContext.TraceIdentifier;
+                ctx.ProblemDetails.Extensions["timestamp"] = DateTime.UtcNow;
+                ctx.ProblemDetails.Instance = $"{ctx.HttpContext.Request.Method} {ctx.HttpContext.Request.Path}";
+            });
+
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
         builder.Services.AddOptions<SecurityHeadersOptions>().BindConfiguration(nameof(SecurityHeadersOptions));
 
@@ -43,6 +51,7 @@ public static class Extensions
         app.UseHttpsRedirection();
         app.UseRouting();
         app.UseRateLimit();
+        app.UseExceptionHandler();
 
         app.UseMiddlewares(); // custom middlewares
         return app;
