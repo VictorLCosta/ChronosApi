@@ -1,6 +1,7 @@
 using Infrastructure.Identity;
 using Infrastructure.Logging;
 using Infrastructure.Middlewares;
+using Infrastructure.OpenTelemetry;
 using Infrastructure.Persistence;
 using Infrastructure.RateLimit;
 using Infrastructure.SecurityHeaders;
@@ -20,6 +21,8 @@ public static class Extensions
 
         builder.AddAppLogging();
 
+        builder.ConfigureOpenTelemetry();
+        
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddPersistence(builder.Configuration);
         builder.Services.AddRateLimit(builder.Configuration);
