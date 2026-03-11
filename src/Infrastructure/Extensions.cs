@@ -1,3 +1,5 @@
+using Infrastructure.Behaviors;
+using Infrastructure.Caching;
 using Infrastructure.Cors;
 using Infrastructure.Exceptions;
 using Infrastructure.Identity;
@@ -41,6 +43,10 @@ public static class Extensions
             });
 
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
+        builder.Services.AddBehaviors();
+
+        builder.Services.AddCaching(builder.Configuration);
 
         builder.Services.AddOptions<SecurityHeadersOptions>().BindConfiguration(nameof(SecurityHeadersOptions));
 
