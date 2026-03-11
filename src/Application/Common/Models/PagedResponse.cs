@@ -1,0 +1,18 @@
+namespace Application.Common.Models;
+
+public sealed class PagedResponse<T>
+{
+    public IReadOnlyCollection<T> Items { get; init; } = [];
+
+    public int PageNumber { get; init; }
+
+    public int PageSize { get; init; }
+
+    public long TotalCount { get; init; }
+
+    public int TotalPages { get; init; }
+
+    public bool HasNext => PageNumber < TotalPages;
+
+    public bool HasPrevious => PageNumber > 1;
+}
