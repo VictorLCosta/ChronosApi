@@ -15,6 +15,8 @@ public static class Extensions
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
+        services.AddSingleton<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
+
         services.AddScoped<IDbInitializer, DbInitializer>();
 
         return services;

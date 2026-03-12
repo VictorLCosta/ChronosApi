@@ -1,3 +1,5 @@
+using Mediator;
+
 namespace Application.Common.Mediator;
 
 public interface ICommandHandler<in TCommand>

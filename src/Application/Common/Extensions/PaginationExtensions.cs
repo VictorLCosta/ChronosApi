@@ -1,8 +1,4 @@
-using Application.Common.Models;
-
-using Microsoft.EntityFrameworkCore;
-
-namespace Infrastructure.Persistence.Pagination;
+namespace Application.Common.Extensions;
 
 public static class PaginationExtensions
 {

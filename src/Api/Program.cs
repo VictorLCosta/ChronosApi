@@ -1,3 +1,5 @@
+using Api;
+
 using Infrastructure;
 using Infrastructure.Logging;
 
@@ -11,11 +13,14 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
+    builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddOpenApi();
 
     builder.AddInfrastructure();
 
     var app = builder.Build();
+
+    app.MapApiEndpoints();
 
     if (app.Environment.IsDevelopment())
     {
