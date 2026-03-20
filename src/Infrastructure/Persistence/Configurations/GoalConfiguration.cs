@@ -1,4 +1,5 @@
 using Domain.Entities;
+using Domain.Enums;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -19,12 +20,12 @@ public class GoalConfiguration : IEntityTypeConfiguration<Goal>
             .HasMaxLength(3000);
 
         builder.Property(g => g.Status)
-            .HasConversion<int>()
-            .HasDefaultValue(0); // NotStarted
+            .HasConversion<string>()
+            .HasDefaultValue(GoalStatus.NotStarted); // NotStarted
 
         builder.Property(g => g.Priority)
-            .HasConversion<int>()
-            .HasDefaultValue(1); // Medium
+            .HasConversion<string>()
+            .HasDefaultValue(PriorityLevel.Medium); // Medium
 
         // Value Object - RecurrenceRule
         builder.ComplexProperty(g => g.RecurrenceRule);

@@ -1,4 +1,5 @@
-using Infrastructure.Behaviors;
+using Application.Common.Interfaces;
+
 using Infrastructure.Caching;
 using Infrastructure.Cors;
 using Infrastructure.Exceptions;
@@ -44,8 +45,6 @@ public static class Extensions
 
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
-        builder.Services.AddBehaviors();
-
         builder.Services.AddCaching(builder.Configuration);
 
         builder.Services.AddOptions<SecurityHeadersOptions>().BindConfiguration(nameof(SecurityHeadersOptions));
@@ -65,5 +64,16 @@ public static class Extensions
 
         app.UseMiddlewares(); // custom middlewares
         return app;
+    }
+
+    public static async Task InitializeDatabasesAsync(this IServiceProvider services, CancellationToken cancellationToken = default)
+    {
+        // Create a new scope to retrieve scoped services
+        using var scope = services.CreateScope();
+
+        var initializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+
+        await initializer.MigrateAsync(cancellationToken);
+        await initializer.SeedAsync(cancellationToken);
     }
 }

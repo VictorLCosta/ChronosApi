@@ -2,6 +2,7 @@ using Application.Common.Interfaces;
 
 using Domain.Entities;
 using Domain.Enums;
+using Domain.ValueObjects;
 
 using Infrastructure.Identity;
 
@@ -43,7 +44,15 @@ public class DbInitializer(
                 Notes = "This is a seeded goal for testing.",
                 Priority = PriorityLevel.Medium,
                 Status = GoalStatus.Active,
-                Project = sampleProject
+                Project = sampleProject,
+                RecurrenceRule = new RecurrenceRule
+                {
+                    Frequency = RecurrenceFrequency.Daily,
+                    Interval = 1,
+                    DaysOfWeek =  [DayOfWeek.Friday],
+                    StartsAt = DateTime.UtcNow,
+                    EndsAt = DateTime.UtcNow.AddMonths(1)
+                }
             };
 
             var task1 = new TaskItem
@@ -51,7 +60,15 @@ public class DbInitializer(
                 Title = "Sample Task 1",
                 Notes = "First seeded task",
                 Project = sampleProject,
-                DueDate = DateTime.UtcNow.AddDays(7)
+                DueDate = DateTime.UtcNow.AddDays(7),
+                RecurrenceRule = new RecurrenceRule
+                {
+                    Frequency = RecurrenceFrequency.Weekly,
+                    Interval = 1,
+                    DaysOfWeek =  [DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday],
+                    StartsAt = DateTime.UtcNow,
+                    EndsAt = DateTime.UtcNow.AddMonths(1)
+                }
             };
 
             var task2 = new TaskItem
@@ -60,7 +77,15 @@ public class DbInitializer(
                 Notes = "Second seeded task",
                 Project = sampleProject,
                 Goal = sampleGoal,
-                DueDate = DateTime.UtcNow.AddDays(14)
+                DueDate = DateTime.UtcNow.AddDays(14),
+                RecurrenceRule = new RecurrenceRule
+                {
+                    Frequency = RecurrenceFrequency.Once,
+                    Interval = 1,
+                    DaysOfWeek =  [DayOfWeek.Monday],
+                    StartsAt = DateTime.UtcNow,
+                    EndsAt = DateTime.UtcNow.AddMonths(1)
+                }
             };
 
             task1.Tags.Add(sampleTag);

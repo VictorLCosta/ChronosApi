@@ -2,7 +2,7 @@ using Application.Common.Extensions;
 
 namespace Application.Features.Projects;
 
-public record ProjectDto(Guid Id, string Title);
+public sealed record ProjectDto(Guid Id, string Title);
 
 public class SearchAllProjectsQuery : IQuery<PagedResponse<ProjectDto>>, IPagedQuery
 {

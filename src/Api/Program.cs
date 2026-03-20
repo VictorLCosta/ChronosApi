@@ -1,5 +1,7 @@
 using Api;
 
+using Application;
+
 using Infrastructure;
 using Infrastructure.Logging;
 
@@ -16,6 +18,7 @@ try
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddOpenApi();
 
+    builder.AddApplication();
     builder.AddInfrastructure();
 
     var app = builder.Build();
@@ -36,6 +39,8 @@ try
     }
 
     app.UseInfrastructure();
+
+    await app.Services.InitializeDatabasesAsync();
 
     await app.RunAsync();
 }

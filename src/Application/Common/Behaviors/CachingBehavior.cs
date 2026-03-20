@@ -8,7 +8,7 @@ using Mediator;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 
-namespace Infrastructure.Behaviors;
+namespace Application.Common.Behaviors;
 
 public class CachingBehavior<TMessage, TResponse>(
     ILogger<CachingBehavior<TMessage, TResponse>> logger,

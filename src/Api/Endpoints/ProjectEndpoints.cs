@@ -14,7 +14,7 @@ public static class ProjectEndpoints
             .MapGroup("/projects")
             .WithTags("Projects");
 
-        group.MapGet("/", async (ISender sender, [AsParameters] SearchAllProjectsQuery query) =>
+        group.MapGet("/", async (IMediator sender, [AsParameters] SearchAllProjectsQuery query) =>
         {
             var result = await sender.Send(query);
 
