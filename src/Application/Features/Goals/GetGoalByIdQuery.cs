@@ -14,6 +14,6 @@ public class GetGoalByIdQueryHandler(IApplicationDbContext context) : IQueryHand
 
         var goalDto = new GoalDto(goal.Id, goal.Title, goal.Notes, goal.Status, goal.Priority, goal.ProjectId);
 
-        return Result.Success(goalDto);
+        return Result.Success<GoalDto?>(goalDto);
     }
 }

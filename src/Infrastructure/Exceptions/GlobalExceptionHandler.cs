@@ -17,14 +17,32 @@ public class GlobalExceptionHandler(
     {
         logger.LogError(exception, "Unhandled exception. TraceId: {TraceId}", httpContext.TraceIdentifier);
 
-        var problemDetails = new ProblemDetails
+        var problemDetails = new ProblemDetails();
+        problemDetails.Instance = httpContext.Request.Path;
+
+        if (exception is FluentValidation.ValidationException fluentException)
         {
-            Status = 500,
-            Title = "An unexpected error occurred.",
-            Type = "https://tools.ietf.org/html/rfc9110#section-15.6.1",
-            Instance = httpContext.Request.Path,
-            Detail = GetSafeErrorMessage(exception, httpContext)
-        };
+            problemDetails.Title = "one or more validation errors occurred.";
+            problemDetails.Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1";
+            httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+            List<string> validationErrors = [];
+            foreach (var error in fluentException.Errors)
+            {
+                validationErrors.Add(error.ErrorMessage);
+            }
+            problemDetails.Extensions.Add("errors", validationErrors);
+        }
+        else
+        {
+            problemDetails = new ProblemDetails
+            {
+                Status = 500,
+                Title = "An unexpected error occurred.",
+                Type = "https://tools.ietf.org/html/rfc9110#section-15.6.1",
+                Instance = httpContext.Request.Path,
+                Detail = GetSafeErrorMessage(exception, httpContext)
+            };
+        }
 
         problemDetails.Extensions["traceId"] = httpContext.TraceIdentifier;
         problemDetails.Extensions["timestamp"] = DateTime.UtcNow;

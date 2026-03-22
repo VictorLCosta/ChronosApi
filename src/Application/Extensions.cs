@@ -1,4 +1,8 @@
+using System.Reflection;
+
 using Application.Common.Behaviors;
+
+using FluentValidation;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -15,9 +19,10 @@ public static class Extensions
             {
                 options.ServiceLifetime = ServiceLifetime.Scoped;
                 options.Assemblies = [typeof(Extensions).Assembly];
-                options.PipelineBehaviors = [typeof(CachingBehavior<,>)];
+                options.PipelineBehaviors = [typeof(CachingBehavior<,>), typeof(ValidationBehavior<,>)];
             }
-        );
+        )
+        .AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
         return builder;
     }

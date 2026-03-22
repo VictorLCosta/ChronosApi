@@ -1,3 +1,5 @@
+using Application.Features.Goals;
+
 namespace Application.Features.GoalLogs;
 
 public sealed record GetGoalLogByIdQuery(Guid Id) : IQuery<GoalLogDto?>;
@@ -14,6 +16,6 @@ public class GetGoalLogByIdQueryHandler(IApplicationDbContext context) : IQueryH
 
         var goalLogDto = new GoalLogDto(goalLog.Id, goalLog.Date, goalLog.Notes, goalLog.Completed, goalLog.GoalId);
 
-        return Result.Success(goalLogDto);
+        return Result.Success<GoalLogDto?>(goalLogDto);
     }
 }

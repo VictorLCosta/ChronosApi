@@ -1,0 +1,21 @@
+using FluentValidation;
+
+namespace Application.Features.Tags;
+
+public class UpdateTagCommandValidator : AbstractValidator<UpdateTagCommand>
+{
+    public UpdateTagCommandValidator()
+    {
+        RuleFor(x => x.Id)
+            .NotEmpty()
+            .WithMessage("Id is required");
+
+        RuleFor(x => x.Name)
+            .NotEmpty()
+            .WithMessage("Name is required")
+            .MaximumLength(50)
+            .WithMessage("Name must not exceed 50 characters")
+            .Matches(@"^[a-zA-Z0-9\s\-_]+$")
+            .WithMessage("Name can only contain letters, numbers, spaces, hyphens, and underscores");
+    }
+}
