@@ -49,7 +49,7 @@ public class CachingBehavior<TMessage, TResponse>(
             response = await GetResponseAndAddToCache();
             logger.LogInformation("added to cache with key : {CacheKey}", message.CacheKey);
         }
-        
+
         return response;
     }
 }

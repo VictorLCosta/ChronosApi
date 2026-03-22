@@ -49,7 +49,7 @@ public class DbInitializer(
                 {
                     Frequency = RecurrenceFrequency.Daily,
                     Interval = 1,
-                    DaysOfWeek =  [DayOfWeek.Friday],
+                    DaysOfWeek = [DayOfWeek.Friday],
                     StartsAt = DateTime.UtcNow,
                     EndsAt = DateTime.UtcNow.AddMonths(1)
                 }
@@ -65,7 +65,7 @@ public class DbInitializer(
                 {
                     Frequency = RecurrenceFrequency.Weekly,
                     Interval = 1,
-                    DaysOfWeek =  [DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday],
+                    DaysOfWeek = [DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday],
                     StartsAt = DateTime.UtcNow,
                     EndsAt = DateTime.UtcNow.AddMonths(1)
                 }
@@ -82,7 +82,7 @@ public class DbInitializer(
                 {
                     Frequency = RecurrenceFrequency.Once,
                     Interval = 1,
-                    DaysOfWeek =  [DayOfWeek.Monday],
+                    DaysOfWeek = [DayOfWeek.Monday],
                     StartsAt = DateTime.UtcNow,
                     EndsAt = DateTime.UtcNow.AddMonths(1)
                 }

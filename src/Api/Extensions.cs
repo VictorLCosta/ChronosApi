@@ -9,5 +9,11 @@ public static class Extensions
         var group = app.MapGroup("/api");
 
         group.MapProjectEndpoints();
+        group.MapGoalEndpoints();
+        group.MapTaskItemEndpoints();
+        group.MapReminderEndpoints();
+        group.MapTagEndpoints();
+        group.MapAttachmentEndpoints();
+        group.MapGoalLogEndpoints();
     }
 }

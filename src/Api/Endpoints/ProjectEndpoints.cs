@@ -1,4 +1,6 @@
+using Application.Features.Goals;
 using Application.Features.Projects;
+using Application.Features.TaskItems;
 
 using Ardalis.Result.AspNetCore;
 
@@ -19,16 +21,56 @@ public static class ProjectEndpoints
             var result = await sender.Send(query);
 
             return result.ToMinimalApiResult();
-        });
+        })
+        .WithName("GetAllProjects");
 
-        group.MapPost("/", () =>
+        group.MapGet("/{id}", async (Guid id, IMediator sender) =>
         {
-            return Results.Ok("bumbum gulosso");
-        });
+            var result = await sender.Send(new GetProjectByIdQuery(id));
 
-        group.MapPut("/{id}", (int id) =>
+            return result.ToMinimalApiResult();
+        })
+        .WithName("GetProjectById");
+
+        group.MapPost("/", async (IMediator sender, CreateProjectCommand command) =>
         {
-            return Results.Ok($"bumbum gulosso {id}");
-        });
+            var result = await sender.Send(command);
+
+            return result.ToMinimalApiResult();
+        })
+        .WithName("CreateProject");
+
+        group.MapPut("/{id}", async (Guid id, IMediator sender, UpdateProjectCommand command) =>
+        {
+            command = command with { Id = id };
+            var result = await sender.Send(command);
+
+            return result.ToMinimalApiResult();
+        })
+        .WithName("UpdateProject");
+
+        group.MapDelete("/{id}", async (Guid id, IMediator sender) =>
+        {
+            var result = await sender.Send(new DeleteProjectCommand(id));
+
+            return result.ToMinimalApiResult();
+        })
+        .WithName("DeleteProject");
+
+        group.MapGet("/{id}/goals", async (Guid id, IMediator sender, [AsParameters] SearchAllGoalsQuery query) =>
+        {
+            var result = await sender.Send(query);
+
+            return result.ToMinimalApiResult();
+        })
+        .WithName("GetGoalsByProject");
+
+        group.MapGet("/{id}/tasks", async (Guid id, IMediator sender, [AsParameters] SearchAllTaskItemsQuery query) =>
+        {
+            var result = await sender.Send(query);
+
+            return result.ToMinimalApiResult();
+        })
+        .WithName("GetTasksByProject");
     }
 }

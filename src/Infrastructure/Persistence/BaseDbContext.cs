@@ -1,5 +1,6 @@
 using System.Reflection;
 
+using Infrastructure.Audit;
 using Infrastructure.Identity;
 
 using Microsoft.AspNetCore.Identity;
@@ -22,6 +23,8 @@ public abstract class BaseDbContext(DbContextOptions options, IHostEnvironment e
         IdentityUserPasskey<string>
     >(options)
 {
+    public DbSet<AuditTrail> AuditTrails => Set<AuditTrail>();
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (environment.IsDevelopment())

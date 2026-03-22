@@ -63,7 +63,7 @@ public class HybridCacheService : ICacheService
             if (bytes is null || bytes.Length == 0) return default;
 
             var value = JsonSerializer.Deserialize<T>(Utf8.GetString(bytes), JsonOpts);
-            
+
             // Populate L1 cache from L2
             if (value is not null)
             {
@@ -92,11 +92,11 @@ public class HybridCacheService : ICacheService
         {
             var bytes = Utf8.GetBytes(JsonSerializer.Serialize(value, JsonOpts));
             await _distributedCache.SetAsync(key, bytes, BuildDistributedEntryOptions(sliding), ct).ConfigureAwait(false);
-            
+
             // Also set in memory cache
             var expiration = GetMemoryCacheExpiration();
             _memoryCache.Set(key, value, expiration);
-            
+
             _logger.LogDebug("Cached {Key} in both memory and distributed caches", key);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)

@@ -25,11 +25,11 @@ public class AuditInterceptor(ICurrentUserService currentUser, TimeProvider time
     public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
     {
         UpdateEntities(eventData.Context);
-        await PublishAuditTrailsAsync(eventData);
+        await PublishAuditTrailsAsync(eventData, cancellationToken);
         return await base.SavingChangesAsync(eventData, result, cancellationToken);
     }
 
-    private async Task PublishAuditTrailsAsync(DbContextEventData eventData)
+    private async Task PublishAuditTrailsAsync(DbContextEventData eventData, CancellationToken cancellationToken)
     {
         if (eventData.Context == null) return;
         eventData.Context.ChangeTracker.DetectChanges();
@@ -99,6 +99,8 @@ public class AuditInterceptor(ICurrentUserService currentUser, TimeProvider time
         {
             auditTrails.Add(trail.ToAuditTrail());
         }
+
+        await eventData.Context.Set<AuditTrail>().AddRangeAsync(auditTrails, cancellationToken).ConfigureAwait(false);
     }
 
     public void UpdateEntities(DbContext? context)
