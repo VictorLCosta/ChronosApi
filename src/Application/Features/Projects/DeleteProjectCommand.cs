@@ -14,6 +14,6 @@ public class DeleteProjectCommandHandler(IApplicationDbContext context) : IComma
         context.Projects.Remove(project);
         await context.SaveChangesAsync(cancellationToken);
 
-        return Result.Success(Unit.Value);
+        return Result.NoContent();
     }
 }

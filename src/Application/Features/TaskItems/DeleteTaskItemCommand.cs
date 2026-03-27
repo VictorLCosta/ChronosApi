@@ -14,6 +14,6 @@ public class DeleteTaskItemCommandHandler(IApplicationDbContext context) : IComm
         context.Tasks.Remove(taskItem);
         await context.SaveChangesAsync(cancellationToken);
 
-        return Result.Success(Unit.Value);
+        return Result.NoContent();
     }
 }

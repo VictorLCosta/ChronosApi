@@ -1,6 +1,15 @@
 namespace Application.Features.Projects;
 
-public sealed record GetProjectByIdQuery(Guid Id) : IQuery<ProjectDto?>;
+public sealed record GetProjectByIdQuery(Guid Id) : IQuery<ProjectDto?>, ICacheable
+{
+    public bool BypassCache => false;
+
+    public string CacheKey => $"GetProjectByIdQuery:{Id}";
+
+    public int SlidingExpirationInMinutes => 10;
+
+    public int AbsoluteExpirationInMinutes => 60;
+}
 
 public class GetProjectByIdQueryHandler(IApplicationDbContext context) : IQueryHandler<GetProjectByIdQuery, ProjectDto?>
 {

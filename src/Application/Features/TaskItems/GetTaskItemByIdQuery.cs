@@ -1,6 +1,12 @@
 namespace Application.Features.TaskItems;
 
-public sealed record GetTaskItemByIdQuery(Guid Id) : IQuery<TaskItemDto?>;
+public sealed record GetTaskItemByIdQuery(Guid Id) : IQuery<TaskItemDto?>, ICacheable
+{
+    public bool BypassCache => false;
+    public string CacheKey => $"GetTaskItemByIdQuery:{Id}";
+    public int SlidingExpirationInMinutes => 5;
+    public int AbsoluteExpirationInMinutes => 5;
+};
 
 public class GetTaskItemByIdQueryHandler(IApplicationDbContext context) : IQueryHandler<GetTaskItemByIdQuery, TaskItemDto?>
 {

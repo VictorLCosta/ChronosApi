@@ -1,6 +1,12 @@
 namespace Application.Features.Goals;
 
-public sealed record GetGoalByIdQuery(Guid Id) : IQuery<GoalDto?>;
+public sealed record GetGoalByIdQuery(Guid Id) : IQuery<GoalDto?>, ICacheable
+{
+    public bool BypassCache => false;
+    public string CacheKey => $"GetGoalByIdQuery:{Id}";
+    public int SlidingExpirationInMinutes => 5;
+    public int AbsoluteExpirationInMinutes => 5;
+};
 
 public class GetGoalByIdQueryHandler(IApplicationDbContext context) : IQueryHandler<GetGoalByIdQuery, GoalDto?>
 {

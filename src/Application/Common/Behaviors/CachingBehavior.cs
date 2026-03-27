@@ -1,8 +1,6 @@
 using System.Text;
 using System.Text.Json;
 
-using Application.Common.Interfaces;
-
 using Mediator;
 
 using Microsoft.Extensions.Caching.Distributed;
@@ -14,7 +12,7 @@ public class CachingBehavior<TMessage, TResponse>(
     ILogger<CachingBehavior<TMessage, TResponse>> logger,
     ICacheService cache
 )
-    : IPipelineBehavior<TMessage, TResponse> where TMessage : ICacheable, IMessage
+    : IPipelineBehavior<TMessage, TResponse> where TMessage : ICacheable, IRequest<TResponse>
 {
     public async ValueTask<TResponse> Handle(TMessage message, MessageHandlerDelegate<TMessage, TResponse> next, CancellationToken cancellationToken)
     {
@@ -42,7 +40,7 @@ public class CachingBehavior<TMessage, TResponse>(
             response = JsonSerializer.Deserialize<TResponse>(Encoding.Default.GetString(cachedResponse))!;
             logger.LogInformation("fetched from cache with key : {CacheKey}", message.CacheKey);
 
-            await cache.RefreshItemAsync(message.CacheKey);
+            await cache.RefreshItemAsync(message.CacheKey, cancellationToken);
         }
         else
         {

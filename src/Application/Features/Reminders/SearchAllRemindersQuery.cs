@@ -2,11 +2,16 @@ using Application.Common.Extensions;
 
 namespace Application.Features.Reminders;
 
-public class SearchAllRemindersQuery : IQuery<PagedResponse<ReminderDto>>, IPagedQuery
+public class SearchAllRemindersQuery : IQuery<PagedResponse<ReminderDto>>, IPagedQuery, ICacheable
 {
     public int? PageNumber { get; set; } = 1;
     public int? PageSize { get; set; } = 10;
     public string? Sort { get; set; }
+
+    public bool BypassCache => false;
+    public string CacheKey => $"SearchAllRemindersQuery:{PageNumber}:{PageSize}:{Sort}";
+    public int SlidingExpirationInMinutes => 5;
+    public int AbsoluteExpirationInMinutes => 5;
 };
 
 public class SearchAllRemindersQueryHandler(IApplicationDbContext context) : IQueryHandler<SearchAllRemindersQuery, PagedResponse<ReminderDto>>

@@ -1,6 +1,12 @@
 namespace Application.Features.Attachments;
 
-public sealed record GetAttachmentByIdQuery(Guid Id) : IQuery<AttachmentDto?>;
+public sealed record GetAttachmentByIdQuery(Guid Id) : IQuery<AttachmentDto?>, ICacheable
+{
+    public bool BypassCache => false;
+    public string CacheKey => $"GetAttachmentByIdQuery:{Id}";
+    public int SlidingExpirationInMinutes => 5;
+    public int AbsoluteExpirationInMinutes => 5;
+};
 
 public class GetAttachmentByIdQueryHandler(IApplicationDbContext context) : IQueryHandler<GetAttachmentByIdQuery, AttachmentDto?>
 {

@@ -2,11 +2,16 @@ using Application.Common.Extensions;
 
 namespace Application.Features.GoalLogs;
 
-public class SearchAllGoalLogsQuery : IQuery<PagedResponse<GoalLogDto>>, IPagedQuery
+public class SearchAllGoalLogsQuery : IQuery<PagedResponse<GoalLogDto>>, IPagedQuery, ICacheable
 {
     public int? PageNumber { get; set; } = 1;
     public int? PageSize { get; set; } = 10;
     public string? Sort { get; set; }
+
+    public bool BypassCache => false;
+    public string CacheKey => $"SearchAllGoalLogsQuery:{PageNumber}:{PageSize}:{Sort}";
+    public int SlidingExpirationInMinutes => 5;
+    public int AbsoluteExpirationInMinutes => 5;
 };
 
 public class SearchAllGoalLogsQueryHandler(IApplicationDbContext context) : IQueryHandler<SearchAllGoalLogsQuery, PagedResponse<GoalLogDto>>

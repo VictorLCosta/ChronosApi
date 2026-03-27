@@ -6,11 +6,16 @@ namespace Application.Features.Goals;
 
 public sealed record GoalDto(Guid Id, string Title, string? Notes, GoalStatus Status, PriorityLevel Priority, Guid? ProjectId);
 
-public class SearchAllGoalsQuery : IQuery<PagedResponse<GoalDto>>, IPagedQuery
+public class SearchAllGoalsQuery : IQuery<PagedResponse<GoalDto>>, IPagedQuery, ICacheable
 {
     public int? PageNumber { get; set; } = 1;
     public int? PageSize { get; set; } = 10;
     public string? Sort { get; set; }
+
+    public bool BypassCache => false;
+    public string CacheKey => $"SearchAllGoalsQuery:{PageNumber}:{PageSize}:{Sort}";
+    public int SlidingExpirationInMinutes => 5;
+    public int AbsoluteExpirationInMinutes => 5;
 };
 
 public class SearchAllGoalsQueryHandler(IApplicationDbContext context) : IQueryHandler<SearchAllGoalsQuery, PagedResponse<GoalDto>>

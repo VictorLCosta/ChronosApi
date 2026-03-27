@@ -14,6 +14,6 @@ public class DeleteTagCommandHandler(IApplicationDbContext context) : ICommandHa
         context.Tags.Remove(tag);
         await context.SaveChangesAsync(cancellationToken);
 
-        return Result.Success(Unit.Value);
+        return Result.NoContent();
     }
 }

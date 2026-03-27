@@ -1,6 +1,12 @@
 namespace Application.Features.Reminders;
 
-public sealed record GetReminderByIdQuery(Guid Id) : IQuery<ReminderDto?>;
+public sealed record GetReminderByIdQuery(Guid Id) : IQuery<ReminderDto?>, ICacheable
+{
+    public bool BypassCache => false;
+    public string CacheKey => $"GetReminderByIdQuery:{Id}";
+    public int SlidingExpirationInMinutes => 5;
+    public int AbsoluteExpirationInMinutes => 5;
+};
 
 public class GetReminderByIdQueryHandler(IApplicationDbContext context) : IQueryHandler<GetReminderByIdQuery, ReminderDto?>
 {

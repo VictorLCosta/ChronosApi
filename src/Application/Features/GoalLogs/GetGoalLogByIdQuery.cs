@@ -2,7 +2,13 @@ using Application.Features.Goals;
 
 namespace Application.Features.GoalLogs;
 
-public sealed record GetGoalLogByIdQuery(Guid Id) : IQuery<GoalLogDto?>;
+public sealed record GetGoalLogByIdQuery(Guid Id) : IQuery<GoalLogDto?>, ICacheable
+{
+    public bool BypassCache => false;
+    public string CacheKey => $"GetGoalLogByIdQuery:{Id}";
+    public int SlidingExpirationInMinutes => 5;
+    public int AbsoluteExpirationInMinutes => 5;
+};
 
 public class GetGoalLogByIdQueryHandler(IApplicationDbContext context) : IQueryHandler<GetGoalLogByIdQuery, GoalLogDto?>
 {
