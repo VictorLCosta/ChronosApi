@@ -57,7 +57,7 @@ public class GoalConfiguration : IEntityTypeConfiguration<Goal>
         // Full-Text Search Index
         builder.HasGeneratedTsVectorColumn(
             t => t.SearchVector,
-            "english",
+            "portuguese",
             t => new { t.Title, t.Notes })
             .HasIndex(t => t.SearchVector)
             .HasMethod("GIN");

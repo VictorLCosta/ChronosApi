@@ -59,6 +59,11 @@ public static class ProjectEndpoints
 
         group.MapGet("/{id}/goals", async (Guid id, IMediator sender, [AsParameters] SearchAllGoalsQuery query) =>
         {
+            if (id == Guid.Empty)
+            {
+                return Results.BadRequest("Invalid project ID.");
+            }
+
             var result = await sender.Send(query);
 
             return result.ToMinimalApiResult();
@@ -67,6 +72,13 @@ public static class ProjectEndpoints
 
         group.MapGet("/{id}/tasks", async (Guid id, IMediator sender, [AsParameters] SearchAllTaskItemsQuery query) =>
         {
+            if (id == Guid.Empty)
+            {
+                return Results.BadRequest("Invalid project ID.");
+            }
+
+            query.ProjectId = id;
+
             var result = await sender.Send(query);
 
             return result.ToMinimalApiResult();

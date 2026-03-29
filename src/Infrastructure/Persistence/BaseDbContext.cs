@@ -6,6 +6,7 @@ using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Hosting;
 
 namespace Infrastructure.Persistence;
@@ -34,6 +35,15 @@ public abstract class BaseDbContext(DbContextOptions options, IHostEnvironment e
         }
     }
 
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        configurationBuilder
+            .Properties<DateTime>()
+            .HaveConversion<DateTimeToDateTimeUtc>();
+
+        base.ConfigureConventions(configurationBuilder);
+    }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
@@ -46,5 +56,13 @@ public abstract class BaseDbContext(DbContextOptions options, IHostEnvironment e
         int result = await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         return result;
+    }
+}
+
+public class DateTimeToDateTimeUtc : ValueConverter<DateTime, DateTime>
+{
+    public DateTimeToDateTimeUtc() : base(c => DateTime.SpecifyKind(c, DateTimeKind.Utc), c => c)
+    {
+
     }
 }

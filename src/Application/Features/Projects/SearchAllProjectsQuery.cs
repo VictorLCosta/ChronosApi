@@ -12,7 +12,7 @@ public class SearchAllProjectsQuery : IQuery<PagedResponse<ProjectDto>>, IPagedQ
 
     public bool BypassCache => false;
 
-    public string CacheKey => "SearchAllProjectsQuery";
+    public string CacheKey => $"SearchAllProjectsQuery:{PageNumber}:{PageSize}:{Sort}";
 
     public int SlidingExpirationInMinutes => 5;
 
@@ -25,6 +25,7 @@ public class SearchAllProjectsQueryHandler(IApplicationDbContext context) : IQue
     {
         var projects = await context.Projects
             .Select(p => new ProjectDto(p.Id, p.Title))
+            .ApplySort(request.Sort)
             .ToPagedResponseAsync(request, cancellationToken);
 
         return Result.Success(projects);
