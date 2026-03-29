@@ -1,12 +1,12 @@
-using System.Reflection;
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Application.Common.Extensions;
 
 public static class LinqExtensions
 {
-    extension<T> (IQueryable<T> query) where T : class
+    extension<T>(IQueryable<T> query) where T : class
     {
         public IQueryable<T> ApplySort(string? sortBy)
         {
@@ -44,7 +44,7 @@ public static class LinqExtensions
         }
     }
 
-    extension (string? query)
+    extension(string? query)
     {
         public string NormalizeSearchQuery()
         {

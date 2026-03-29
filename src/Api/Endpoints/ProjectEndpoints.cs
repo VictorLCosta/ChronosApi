@@ -64,6 +64,8 @@ public static class ProjectEndpoints
                 return Results.BadRequest("Invalid project ID.");
             }
 
+            query.ProjectId = id;
+
             var result = await sender.Send(query);
 
             return result.ToMinimalApiResult();

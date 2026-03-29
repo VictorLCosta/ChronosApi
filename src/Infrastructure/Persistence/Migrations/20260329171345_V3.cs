@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+
 using NpgsqlTypes;
 
 #nullable disable
