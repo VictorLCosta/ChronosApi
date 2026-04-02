@@ -17,8 +17,10 @@ public class GlobalExceptionHandler(
     {
         logger.LogError(exception, "Unhandled exception. TraceId: {TraceId}", httpContext.TraceIdentifier);
 
-        var problemDetails = new ProblemDetails();
-        problemDetails.Instance = httpContext.Request.Path;
+        var problemDetails = new ProblemDetails
+        {
+            Instance = httpContext.Request.Path
+        };
 
         if (exception is FluentValidation.ValidationException fluentException)
         {

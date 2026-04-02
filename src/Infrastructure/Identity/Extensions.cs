@@ -21,7 +21,12 @@ public static class Extensions
                 options.Password.RequireLowercase = true;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = true;
-                options.Password.RequiredLength = 9;
+                options.Password.RequiredLength = 12;
+
+                options.Lockout.MaxFailedAccessAttempts = 3;
+
+                options.SignIn.RequireConfirmedEmail = true;
+
                 options.User.RequireUniqueEmail = true;
             })
             .AddDefaultTokenProviders()

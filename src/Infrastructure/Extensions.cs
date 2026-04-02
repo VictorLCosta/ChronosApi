@@ -58,6 +58,8 @@ public static class Extensions
 
         app.UseHttpsRedirection();
         app.UseRouting();
+        app.UseAuthentication();
+        app.UseAuthorization();
         app.UseAppCors();
         app.UseRateLimit();
         app.UseExceptionHandler();
