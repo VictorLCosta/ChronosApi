@@ -4,6 +4,8 @@ using Application.Common.Interfaces;
 
 using Domain.Entities;
 
+using Infrastructure.Identity;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 
@@ -19,6 +21,8 @@ public class ApplicationDbContext(DbContextOptions options, IHostEnvironment env
     public DbSet<GoalLog> GoalLogs => Set<GoalLog>();
 
     public DbSet<Project> Projects => Set<Project>();
+
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     public DbSet<Reminder> Reminders => Set<Reminder>();
 

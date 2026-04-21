@@ -10,6 +10,6 @@ public class AppUser : IdentityUser
 
     public Uri? AvatarUrl { get; set; }
     public bool IsActive { get; set; }
-    public string? RefreshToken { get; set; }
-    public DateTime RefreshTokenExpiryTime { get; set; }
+
+    public ICollection<RefreshToken> RefreshTokens { get; set; } = [];
 }

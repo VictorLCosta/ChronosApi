@@ -10,6 +10,7 @@ public static class Extensions
 
         group.MapProjectEndpoints();
         group.MapGoalEndpoints();
+        group.MapIdentityEndpoints();
         group.MapTaskItemEndpoints();
         group.MapReminderEndpoints();
         group.MapTagEndpoints();

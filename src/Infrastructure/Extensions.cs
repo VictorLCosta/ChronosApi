@@ -1,5 +1,6 @@
 using Application.Common.Interfaces;
 
+using Infrastructure.Auth;
 using Infrastructure.Caching;
 using Infrastructure.Cors;
 using Infrastructure.Exceptions;
@@ -21,6 +22,8 @@ public static class Extensions
     public static IHostApplicationBuilder AddInfrastructure(this IHostApplicationBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
+
+        builder.Services.AddJwtAuth(builder.Configuration);
 
         builder.Services.AddMiddlewares(); // custom middlewares
 

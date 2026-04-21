@@ -1,5 +1,7 @@
+using Application.Common.Identity.Services;
 using Application.Common.Interfaces;
 
+using Infrastructure.Identity.Services;
 using Infrastructure.Persistence;
 using Infrastructure.Services;
 
@@ -14,6 +16,12 @@ public static class Extensions
         public IServiceCollection AddAppIdentity()
         {
             services.AddScoped<ICurrentUserService, CurrentUserService>();
+            services.AddScoped<IRequestContext, RequestContext>();
+            services.AddScoped<IIdentityService, IdentityService>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<ITwoFactorService, TwoFactorService>();
+            services.AddScoped<IUserPasswordService, UserPasswordService>();
+            services.AddSingleton(TimeProvider.System);
 
             services.AddIdentity<AppUser, AppRole>(options =>
             {

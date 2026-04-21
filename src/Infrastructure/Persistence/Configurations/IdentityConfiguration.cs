@@ -18,6 +18,12 @@ public class ApplicationUserConfig : IEntityTypeConfiguration<AppUser>
         builder
             .Property(u => u.ObjectId)
                 .HasMaxLength(256);
+
+        builder
+            .HasMany(u => u.RefreshTokens)
+            .WithOne(rt => rt.User)
+            .HasForeignKey(rt => rt.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
 
@@ -84,5 +90,60 @@ public class IdentityUserTokenConfig : IEntityTypeConfiguration<IdentityUserToke
 
         builder
             .ToTable("UserTokens", "identity");
+    }
+}
+
+public class RefreshTokenConfig : IEntityTypeConfiguration<RefreshToken>
+{
+    public void Configure(EntityTypeBuilder<RefreshToken> builder)
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+
+        builder
+            .ToTable("RefreshTokens", "identity");
+
+        builder
+            .HasKey(rt => rt.Id);
+
+        builder
+            .Property(rt => rt.UserId)
+            .IsRequired()
+            .HasMaxLength(450);
+
+        builder
+            .Property(rt => rt.TokenHash)
+            .IsRequired()
+            .HasMaxLength(512);
+
+        builder
+            .Property(rt => rt.FamilyId)
+            .IsRequired()
+            .HasMaxLength(100);
+
+        builder
+            .Property(rt => rt.RevokedReason)
+            .HasMaxLength(500);
+
+        builder
+            .Property(rt => rt.ReplacedByTokenHash)
+            .HasMaxLength(512);
+
+        builder
+            .Property(rt => rt.IpAddress)
+            .HasMaxLength(64);
+
+        builder
+            .Property(rt => rt.UserAgent)
+            .HasMaxLength(1024);
+
+        builder
+            .HasIndex(rt => rt.TokenHash)
+            .IsUnique();
+
+        builder
+            .HasIndex(rt => new { rt.UserId, rt.ExpiresAtUtc });
+
+        builder
+            .HasIndex(rt => new { rt.UserId, rt.RevokedAtUtc });
     }
 }

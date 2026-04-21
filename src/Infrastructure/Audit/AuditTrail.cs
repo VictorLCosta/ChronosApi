@@ -4,7 +4,7 @@ namespace Infrastructure.Audit;
 
 public class AuditTrail : BaseEntity
 {
-    public Guid UserId { get; set; }
+    public string? UserId { get; set; }
     public string? Operation { get; set; }
     public string? Entity { get; set; }
     public DateTimeOffset DateTime { get; set; }

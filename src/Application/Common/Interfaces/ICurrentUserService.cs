@@ -13,7 +13,7 @@ public interface ICurrentUserService
     /// Gets the unique identifier of the current user.
     /// </summary>
     /// <returns>The user's unique identifier.</returns>
-    Guid GetUserId();
+    string? GetUserId();
 
     /// <summary>
     /// Gets the email address of the current user.
@@ -42,5 +42,5 @@ public interface ICurrentUserService
 
     void SetCurrentUser(ClaimsPrincipal user);
 
-    void SetCurrentUserId(Guid userId);
+    void SetCurrentUserId(string userId);
 }
