@@ -17,6 +17,7 @@ public class GetReminderByIdQueryHandler(IApplicationDbContext context, ICurrent
         var userId = currentUserService.GetRequiredUserId();
 
         var reminder = await context.Reminders
+            .AsNoTracking()
             .WhereCreatedBy(userId)
             .FirstOrDefaultAsync(r => r.Id == request.Id, cancellationToken);
 

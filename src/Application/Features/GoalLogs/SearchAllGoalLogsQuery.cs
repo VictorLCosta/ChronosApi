@@ -21,6 +21,7 @@ public class SearchAllGoalLogsQueryHandler(IApplicationDbContext context, ICurre
         var userId = currentUserService.GetRequiredUserId();
 
         var goalLogs = await context.GoalLogs
+            .AsNoTracking()
             .WhereCreatedBy(userId)
             .Select(gl => new GoalLogDto(gl.Id, gl.Date, gl.Notes, gl.Completed, gl.GoalId))
             .ToPagedResponseAsync(request, cancellationToken);

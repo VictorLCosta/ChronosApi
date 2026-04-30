@@ -1,3 +1,5 @@
+using NpgsqlTypes;
+
 namespace Domain.Entities;
 
 public class Project : BaseEntity
@@ -6,4 +8,6 @@ public class Project : BaseEntity
 
     public ICollection<TaskItem> TaskItems { get; set; } = [];
     public ICollection<Goal> Goals { get; set; } = [];
+
+    public NpgsqlTsVector SearchVector { get; set; } = default!;
 }

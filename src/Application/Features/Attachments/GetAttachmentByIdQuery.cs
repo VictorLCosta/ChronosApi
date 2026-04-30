@@ -17,6 +17,7 @@ public class GetAttachmentByIdQueryHandler(IApplicationDbContext context, ICurre
         var userId = currentUserService.GetRequiredUserId();
 
         var attachment = await context.Attachments
+            .AsNoTracking()
             .WhereCreatedBy(userId)
             .FirstOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
 

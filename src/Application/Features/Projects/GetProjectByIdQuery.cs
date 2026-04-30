@@ -20,6 +20,7 @@ public class GetProjectByIdQueryHandler(IApplicationDbContext context, ICurrentU
         var userId = currentUserService.GetRequiredUserId();
 
         var project = await context.Projects
+            .AsNoTracking()
             .WhereCreatedBy(userId)
             .FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
 

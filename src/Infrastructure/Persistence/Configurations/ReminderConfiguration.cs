@@ -34,6 +34,8 @@ public class ReminderConfiguration : IEntityTypeConfiguration<Reminder>
             .OnDelete(DeleteBehavior.Cascade);
 
         // Indexes
+        builder.HasIndex(r => r.CreatedBy);
+        builder.HasIndex(r => new { r.CreatedBy, r.RemindAt });
         builder.HasIndex(r => r.TaskItemId);
         builder.HasIndex(r => r.GoalId);
         builder.HasIndex(r => r.RemindAt);

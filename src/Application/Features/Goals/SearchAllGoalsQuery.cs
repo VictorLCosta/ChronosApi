@@ -28,6 +28,7 @@ public class SearchAllGoalsQueryHandler(IApplicationDbContext context, ICurrentU
         var userId = currentUserService.GetRequiredUserId();
 
         var goals = await context.Goals
+            .AsNoTracking()
             .WhereCreatedBy(userId)
             .WhereIf(request.ProjectId.HasValue, x => x.ProjectId == request.ProjectId)
             .WhereIf(!string.IsNullOrWhiteSpace(searchQuery), x => x.SearchVector.Matches(EF.Functions.PlainToTsQuery(searchQuery)))

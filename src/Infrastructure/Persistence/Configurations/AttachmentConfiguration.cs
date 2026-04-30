@@ -34,6 +34,9 @@ public class AttachmentConfiguration : IEntityTypeConfiguration<Attachment>
             .OnDelete(DeleteBehavior.Cascade);
 
         // Indexes
+        builder.HasIndex(a => a.CreatedBy);
+        builder.HasIndex(a => new { a.CreatedBy, a.TaskItemId });
+        builder.HasIndex(a => new { a.CreatedBy, a.Created });
         builder.HasIndex(a => a.TaskItemId);
         builder.HasIndex(a => a.Created);
     }

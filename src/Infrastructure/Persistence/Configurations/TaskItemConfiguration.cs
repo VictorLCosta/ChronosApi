@@ -58,6 +58,10 @@ public class TaskItemConfiguration : IEntityTypeConfiguration<TaskItem>
             .OnDelete(DeleteBehavior.Cascade);
 
         // Indexes
+        builder.HasIndex(t => t.CreatedBy);
+        builder.HasIndex(t => new { t.CreatedBy, t.ProjectId });
+        builder.HasIndex(t => new { t.CreatedBy, t.GoalId });
+        builder.HasIndex(t => new { t.CreatedBy, t.Created });
         builder.HasIndex(t => t.ProjectId);
         builder.HasIndex(t => t.GoalId);
         builder.HasIndex(t => t.ParentTaskId);

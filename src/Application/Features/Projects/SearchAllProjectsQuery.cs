@@ -11,7 +11,7 @@ public class SearchAllProjectsQuery : IQuery<PagedResponse<ProjectDto>>, IPagedQ
     public string? Sort { get; set; }
     public string? Q { get; set; }
 
-    public bool BypassCache => true;
+    public bool BypassCache => false;
 
     public string CacheKey => $"SearchAllProjectsQuery:{PageNumber}:{PageSize}:{Sort}:{Q}";
 
@@ -26,9 +26,11 @@ public class SearchAllProjectsQueryHandler(IApplicationDbContext context, ICurre
     {
         var userId = currentUserService.GetRequiredUserId();
 
+        var searchQuery = request.Q.NormalizeSearchQuery();
+
         var projects = await context.Projects
             .AsNoTracking()
-            .WhereIf(!string.IsNullOrEmpty(request.Q), p => p.Title.Contains(request.Q!))
+            .WhereIf(!string.IsNullOrEmpty(request.Q), x => x.SearchVector.Matches(EF.Functions.PlainToTsQuery(searchQuery)))
             .Where(p => p.CreatedBy == userId)
             .Select(p => new ProjectDto(p.Id, p.Title))
             .ApplySort(request.Sort)

@@ -17,6 +17,7 @@ public class GetTaskItemByIdQueryHandler(IApplicationDbContext context, ICurrent
         var userId = currentUserService.GetRequiredUserId();
 
         var taskItem = await context.Tasks
+            .AsNoTracking()
             .WhereCreatedBy(userId)
             .FirstOrDefaultAsync(t => t.Id == request.Id, cancellationToken);
 

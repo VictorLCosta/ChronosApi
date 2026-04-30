@@ -18,7 +18,7 @@ public static class LinqExtensions
                 .Select(p => p.Name)
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-            string[] sortExpressions = [];
+            List<string> sortExpressions = [];
 
             foreach (var part in sortBy.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
             {
@@ -30,10 +30,10 @@ public static class LinqExtensions
                     ? "descending"
                     : "ascending";
 
-                _ = sortExpressions.Append($"{tokens[0]} {direction}");
+                sortExpressions.Add($"{tokens[0]} {direction}");
             }
 
-            return sortExpressions.Length > 0
+            return sortExpressions.Count > 0
                 ? query.OrderBy(string.Join(", ", sortExpressions))
                 : query;
         }

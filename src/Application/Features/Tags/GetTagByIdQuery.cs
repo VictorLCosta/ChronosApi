@@ -17,6 +17,7 @@ public class GetTagByIdQueryHandler(IApplicationDbContext context, ICurrentUserS
         var userId = currentUserService.GetRequiredUserId();
 
         var tag = await context.Tags
+            .AsNoTracking()
             .WhereCreatedBy(userId)
             .FirstOrDefaultAsync(t => t.Id == request.Id, cancellationToken);
 

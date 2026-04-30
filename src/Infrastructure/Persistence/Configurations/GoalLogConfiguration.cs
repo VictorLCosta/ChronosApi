@@ -28,6 +28,9 @@ public class GoalLogConfiguration : IEntityTypeConfiguration<GoalLog>
             .OnDelete(DeleteBehavior.Cascade);
 
         // Indexes
+        builder.HasIndex(gl => gl.CreatedBy);
+        builder.HasIndex(gl => new { gl.CreatedBy, gl.GoalId });
+        builder.HasIndex(gl => new { gl.CreatedBy, gl.Date });
         builder.HasIndex(gl => gl.GoalId);
         builder.HasIndex(gl => gl.Date);
         builder.HasIndex(g => new { g.GoalId, g.Date }).IsUnique();

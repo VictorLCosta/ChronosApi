@@ -18,6 +18,7 @@ public class GetGoalLogByIdQueryHandler(IApplicationDbContext context, ICurrentU
         var userId = currentUserService.GetRequiredUserId();
 
         var goalLog = await context.GoalLogs
+            .AsNoTracking()
             .WhereCreatedBy(userId)
             .FirstOrDefaultAsync(gl => gl.Id == request.Id, cancellationToken);
 

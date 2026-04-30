@@ -16,6 +16,7 @@ public class SearchAllAttachmentsQueryHandler(IApplicationDbContext context, ICu
         var userId = currentUserService.GetRequiredUserId();
 
         var attachments = await context.Attachments
+            .AsNoTracking()
             .WhereCreatedBy(userId)
             .Select(a => new AttachmentDto(a.Id, a.FileName, a.ContentType, a.SizeBytes, a.StorageUrl, a.TaskItemId))
             .ToPagedResponseAsync(request, cancellationToken);

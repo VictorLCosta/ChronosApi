@@ -21,6 +21,7 @@ public class SearchAllRemindersQueryHandler(IApplicationDbContext context, ICurr
         var userId = currentUserService.GetRequiredUserId();
 
         var reminders = await context.Reminders
+            .AsNoTracking()
             .WhereCreatedBy(userId)
             .Select(r => new ReminderDto(r.Id, r.RemindAt, r.IsSent, r.OffsetMinutes, r.TaskItemId, r.GoalId))
             .ToPagedResponseAsync(request, cancellationToken);

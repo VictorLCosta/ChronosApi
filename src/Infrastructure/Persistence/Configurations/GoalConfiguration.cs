@@ -49,6 +49,9 @@ public class GoalConfiguration : IEntityTypeConfiguration<Goal>
             .UsingEntity(j => j.ToTable("GoalTags"));
 
         // Indexes
+        builder.HasIndex(g => g.CreatedBy);
+        builder.HasIndex(g => new { g.CreatedBy, g.ProjectId });
+        builder.HasIndex(g => new { g.CreatedBy, g.Created });
         builder.HasIndex(g => g.ProjectId);
         builder.HasIndex(g => g.Status);
         builder.HasIndex(g => g.Priority);

@@ -25,6 +25,7 @@ public class TagConfiguration : IEntityTypeConfiguration<Tag>
             .UsingEntity(j => j.ToTable("GoalTags"));
 
         // Indexes
+        builder.HasIndex(t => t.CreatedBy);
         builder.HasIndex(t => t.Name).IsUnique();
     }
 }

@@ -29,6 +29,14 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
             .OnDelete(DeleteBehavior.SetNull);
 
         // Indexes
+        builder.HasIndex(p => p.CreatedBy);
+        builder.HasIndex(p => new { p.CreatedBy, p.Created });
         builder.HasIndex(p => p.Created);
+
+        builder.HasGeneratedTsVectorColumn(
+            x => x.SearchVector,
+            "portuguese",
+            x => new { x.Title }
+        );
     }
 }
