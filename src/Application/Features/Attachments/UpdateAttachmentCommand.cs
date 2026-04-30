@@ -1,3 +1,5 @@
+using Application.Common.Extensions;
+
 namespace Application.Features.Attachments;
 
 public sealed record UpdateAttachmentResultDto(Guid Id);
@@ -11,11 +13,15 @@ public sealed record UpdateAttachmentCommand(
     Guid? TaskItemId = null
 ) : ICommand<UpdateAttachmentResultDto>;
 
-public class UpdateAttachmentCommandHandler(IApplicationDbContext context) : ICommandHandler<UpdateAttachmentCommand, UpdateAttachmentResultDto>
+public class UpdateAttachmentCommandHandler(IApplicationDbContext context, ICurrentUserService currentUserService) : ICommandHandler<UpdateAttachmentCommand, UpdateAttachmentResultDto>
 {
     public async ValueTask<Result<UpdateAttachmentResultDto>> Handle(UpdateAttachmentCommand request, CancellationToken cancellationToken)
     {
-        var attachment = await context.Attachments.FirstOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
+        var userId = currentUserService.GetRequiredUserId();
+
+        var attachment = await context.Attachments
+            .WhereCreatedBy(userId)
+            .FirstOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
 
         if (attachment is null)
             return Result.NotFound();

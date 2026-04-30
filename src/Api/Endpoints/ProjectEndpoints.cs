@@ -14,7 +14,8 @@ public static class ProjectEndpoints
     {
         var group = app
             .MapGroup("/projects")
-            .WithTags("Projects");
+            .WithTags("Projects")
+            .RequireAuthorization();
 
         group.MapGet("/", async (IMediator sender, [AsParameters] SearchAllProjectsQuery query) =>
         {

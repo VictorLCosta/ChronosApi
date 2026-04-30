@@ -1,3 +1,5 @@
+using Application.Common.Extensions;
+
 using Domain.Enums;
 
 namespace Application.Features.Goals;
@@ -13,11 +15,15 @@ public sealed record UpdateGoalCommand(
     Guid? ProjectId = null
 ) : ICommand<UpdateGoalResultDto>;
 
-public class UpdateGoalCommandHandler(IApplicationDbContext context) : ICommandHandler<UpdateGoalCommand, UpdateGoalResultDto>
+public class UpdateGoalCommandHandler(IApplicationDbContext context, ICurrentUserService currentUserService) : ICommandHandler<UpdateGoalCommand, UpdateGoalResultDto>
 {
     public async ValueTask<Result<UpdateGoalResultDto>> Handle(UpdateGoalCommand request, CancellationToken cancellationToken)
     {
-        var goal = await context.Goals.FirstOrDefaultAsync(g => g.Id == request.Id, cancellationToken);
+        var userId = currentUserService.GetRequiredUserId();
+
+        var goal = await context.Goals
+            .WhereCreatedBy(userId)
+            .FirstOrDefaultAsync(g => g.Id == request.Id, cancellationToken);
 
         if (goal is null)
             return Result.NotFound();

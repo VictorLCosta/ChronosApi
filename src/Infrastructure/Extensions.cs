@@ -7,12 +7,14 @@ using Infrastructure.Exceptions;
 using Infrastructure.Identity;
 using Infrastructure.Logging;
 using Infrastructure.Middlewares;
+using Infrastructure.OpenApi;
 using Infrastructure.OpenTelemetry;
 using Infrastructure.Persistence;
 using Infrastructure.RateLimit;
 using Infrastructure.SecurityHeaders;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Hosting;
 
 namespace Infrastructure;
@@ -22,6 +24,19 @@ public static class Extensions
     public static IHostApplicationBuilder AddInfrastructure(this IHostApplicationBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
+
+        builder.Services.AddResponseCompression(options =>
+        {
+            options.EnableForHttps = true;
+            options.Providers.Add<BrotliCompressionProvider>();
+            options.Providers.Add<GzipCompressionProvider>();
+        });
+        builder.Services.Configure<BrotliCompressionProviderOptions>(options =>
+        {
+            options.Level = System.IO.Compression.CompressionLevel.Fastest;
+        });
+
+        builder.Services.AddAppIdentity();
 
         builder.Services.AddJwtAuth(builder.Configuration);
 
@@ -35,9 +50,9 @@ public static class Extensions
         builder.Services.AddPersistence(builder.Configuration);
         builder.Services.AddRateLimit(builder.Configuration);
 
-        builder.Services.AddAppIdentity();
-
         builder.Services.AddAppCors(builder.Configuration);
+
+        builder.Services.AddAppOpenApi(builder.Configuration);
 
         builder.Services.AddProblemDetails(options => options.CustomizeProblemDetails = ctx =>
             {
@@ -61,11 +76,13 @@ public static class Extensions
 
         app.UseHttpsRedirection();
         app.UseRouting();
+        app.UseAppCors();
         app.UseAuthentication();
         app.UseAuthorization();
-        app.UseAppCors();
         app.UseRateLimit();
         app.UseExceptionHandler();
+
+        app.UseAppOpenApi();
 
         app.UseMiddlewares(); // custom middlewares
         return app;

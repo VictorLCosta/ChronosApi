@@ -14,19 +14,21 @@ public class SearchAllGoalsQuery : IQuery<PagedResponse<GoalDto>>, IPagedQuery, 
     public string? Q { get; set; }
     public Guid? ProjectId { get; set; }
 
-    public bool BypassCache => false;
+    public bool BypassCache => true;
     public string CacheKey => $"SearchAllGoalsQuery:{PageNumber}:{PageSize}:{Sort}:{Q}";
     public int SlidingExpirationInMinutes => 5;
     public int AbsoluteExpirationInMinutes => 5;
 };
 
-public class SearchAllGoalsQueryHandler(IApplicationDbContext context) : IQueryHandler<SearchAllGoalsQuery, PagedResponse<GoalDto>>
+public class SearchAllGoalsQueryHandler(IApplicationDbContext context, ICurrentUserService currentUserService) : IQueryHandler<SearchAllGoalsQuery, PagedResponse<GoalDto>>
 {
     public async ValueTask<Result<PagedResponse<GoalDto>>> Handle(SearchAllGoalsQuery request, CancellationToken cancellationToken)
     {
         var searchQuery = request.Q.NormalizeSearchQuery();
+        var userId = currentUserService.GetRequiredUserId();
 
         var goals = await context.Goals
+            .WhereCreatedBy(userId)
             .WhereIf(request.ProjectId.HasValue, x => x.ProjectId == request.ProjectId)
             .WhereIf(!string.IsNullOrWhiteSpace(searchQuery), x => x.SearchVector.Matches(EF.Functions.PlainToTsQuery(searchQuery)))
             .Select(g => new GoalDto(g.Id, g.Title, g.Notes, g.Status, g.Priority, g.ProjectId))

@@ -1,3 +1,5 @@
+using Application.Common.Extensions;
+
 namespace Application.Features.TaskItems;
 
 public sealed record UpdateTaskItemResultDto(Guid Id, string Title);
@@ -13,11 +15,15 @@ public sealed record UpdateTaskItemCommand(
     Guid? ParentTaskId = null
 ) : ICommand<UpdateTaskItemResultDto>;
 
-public class UpdateTaskItemCommandHandler(IApplicationDbContext context) : ICommandHandler<UpdateTaskItemCommand, UpdateTaskItemResultDto>
+public class UpdateTaskItemCommandHandler(IApplicationDbContext context, ICurrentUserService currentUserService) : ICommandHandler<UpdateTaskItemCommand, UpdateTaskItemResultDto>
 {
     public async ValueTask<Result<UpdateTaskItemResultDto>> Handle(UpdateTaskItemCommand request, CancellationToken cancellationToken)
     {
-        var taskItem = await context.Tasks.FirstOrDefaultAsync(t => t.Id == request.Id, cancellationToken);
+        var userId = currentUserService.GetRequiredUserId();
+
+        var taskItem = await context.Tasks
+            .WhereCreatedBy(userId)
+            .FirstOrDefaultAsync(t => t.Id == request.Id, cancellationToken);
 
         if (taskItem is null)
             return Result.NotFound();

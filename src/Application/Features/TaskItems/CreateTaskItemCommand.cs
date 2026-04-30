@@ -1,3 +1,5 @@
+using Application.Common.Extensions;
+
 namespace Application.Features.TaskItems;
 
 public sealed record CreateTaskItemResultDto(Guid Id, string Title);
@@ -12,10 +14,12 @@ public sealed record CreateTaskItemCommand(
     Guid? ParentTaskId = null
 ) : ICommand<CreateTaskItemResultDto>;
 
-public class CreateTaskItemCommandHandler(IApplicationDbContext context) : ICommandHandler<CreateTaskItemCommand, CreateTaskItemResultDto>
+public class CreateTaskItemCommandHandler(IApplicationDbContext context, ICurrentUserService currentUserService) : ICommandHandler<CreateTaskItemCommand, CreateTaskItemResultDto>
 {
     public async ValueTask<Result<CreateTaskItemResultDto>> Handle(CreateTaskItemCommand request, CancellationToken cancellationToken)
     {
+        var userId = currentUserService.GetRequiredUserId();
+
         var taskItem = await context.Tasks.AddAsync(new Domain.Entities.TaskItem
         {
             Title = request.Title,
@@ -24,7 +28,8 @@ public class CreateTaskItemCommandHandler(IApplicationDbContext context) : IComm
             StartDate = request.StartDate,
             GoalId = request.GoalId,
             ProjectId = request.ProjectId ?? Guid.Empty,
-            ParentTaskId = request.ParentTaskId
+            ParentTaskId = request.ParentTaskId,
+            CreatedBy = userId
         }, cancellationToken);
 
         await context.SaveChangesAsync(cancellationToken);

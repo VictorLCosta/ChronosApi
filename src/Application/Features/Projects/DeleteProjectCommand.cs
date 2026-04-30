@@ -1,12 +1,18 @@
+using Application.Common.Extensions;
+
 namespace Application.Features.Projects;
 
 public sealed record DeleteProjectCommand(Guid Id) : ICommand<Unit>;
 
-public class DeleteProjectCommandHandler(IApplicationDbContext context) : ICommandHandler<DeleteProjectCommand, Unit>
+public class DeleteProjectCommandHandler(IApplicationDbContext context, ICurrentUserService currentUserService) : ICommandHandler<DeleteProjectCommand, Unit>
 {
     public async ValueTask<Result<Unit>> Handle(DeleteProjectCommand request, CancellationToken cancellationToken)
     {
-        var project = await context.Projects.FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
+        var userId = currentUserService.GetRequiredUserId();
+
+        var project = await context.Projects
+            .WhereCreatedBy(userId)
+            .FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
 
         if (project is null)
             return Result.NotFound();

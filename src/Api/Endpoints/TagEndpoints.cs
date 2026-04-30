@@ -12,7 +12,8 @@ public static class TagEndpoints
     {
         var group = app
             .MapGroup("/tags")
-            .WithTags("Tags");
+            .WithTags("Tags")
+            .RequireAuthorization();
 
         group.MapGet("/", async (IMediator sender, [AsParameters] SearchAllTagsQuery query) =>
         {

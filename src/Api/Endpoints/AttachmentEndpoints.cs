@@ -12,7 +12,8 @@ public static class AttachmentEndpoints
     {
         var group = app
             .MapGroup("/attachments")
-            .WithTags("Attachments");
+            .WithTags("Attachments")
+            .RequireAuthorization();
 
         group.MapGet("/", async (IMediator sender, [AsParameters] SearchAllAttachmentsQuery query) =>
         {

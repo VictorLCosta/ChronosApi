@@ -1,3 +1,5 @@
+using Application.Common.Extensions;
+
 namespace Application.Features.GoalLogs;
 
 public sealed record GoalLogDto(Guid Id, DateOnly Date, string? Notes, bool? Completed, Guid GoalId);
@@ -11,16 +13,19 @@ public sealed record CreateGoalLogCommand(
     bool? Completed = null
 ) : ICommand<CreateGoalLogResultDto>;
 
-public class CreateGoalLogCommandHandler(IApplicationDbContext context) : ICommandHandler<CreateGoalLogCommand, CreateGoalLogResultDto>
+public class CreateGoalLogCommandHandler(IApplicationDbContext context, ICurrentUserService currentUserService) : ICommandHandler<CreateGoalLogCommand, CreateGoalLogResultDto>
 {
     public async ValueTask<Result<CreateGoalLogResultDto>> Handle(CreateGoalLogCommand request, CancellationToken cancellationToken)
     {
+        var userId = currentUserService.GetRequiredUserId();
+
         var goalLog = await context.GoalLogs.AddAsync(new Domain.Entities.GoalLog
         {
             Date = request.Date,
             Notes = request.Notes,
             Completed = request.Completed,
-            GoalId = request.GoalId
+            GoalId = request.GoalId,
+            CreatedBy = userId
         }, cancellationToken);
 
         await context.SaveChangesAsync(cancellationToken);

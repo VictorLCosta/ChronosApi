@@ -1,3 +1,5 @@
+using Application.Common.Extensions;
+
 namespace Application.Features.GoalLogs;
 
 public sealed record UpdateGoalLogResultDto(Guid Id);
@@ -10,11 +12,15 @@ public sealed record UpdateGoalLogCommand(
     Guid? GoalId = null
 ) : ICommand<UpdateGoalLogResultDto>;
 
-public class UpdateGoalLogCommandHandler(IApplicationDbContext context) : ICommandHandler<UpdateGoalLogCommand, UpdateGoalLogResultDto>
+public class UpdateGoalLogCommandHandler(IApplicationDbContext context, ICurrentUserService currentUserService) : ICommandHandler<UpdateGoalLogCommand, UpdateGoalLogResultDto>
 {
     public async ValueTask<Result<UpdateGoalLogResultDto>> Handle(UpdateGoalLogCommand request, CancellationToken cancellationToken)
     {
-        var goalLog = await context.GoalLogs.FirstOrDefaultAsync(gl => gl.Id == request.Id, cancellationToken);
+        var userId = currentUserService.GetRequiredUserId();
+
+        var goalLog = await context.GoalLogs
+            .WhereCreatedBy(userId)
+            .FirstOrDefaultAsync(gl => gl.Id == request.Id, cancellationToken);
 
         if (goalLog is null)
             return Result.NotFound();

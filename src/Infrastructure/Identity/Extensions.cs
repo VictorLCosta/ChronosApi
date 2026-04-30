@@ -21,6 +21,7 @@ public static class Extensions
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ITwoFactorService, TwoFactorService>();
             services.AddScoped<IUserPasswordService, UserPasswordService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddSingleton(TimeProvider.System);
 
             services.AddIdentity<AppUser, AppRole>(options =>

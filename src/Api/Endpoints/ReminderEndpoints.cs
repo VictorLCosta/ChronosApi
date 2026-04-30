@@ -12,7 +12,8 @@ public static class ReminderEndpoints
     {
         var group = app
             .MapGroup("/reminders")
-            .WithTags("Reminders");
+            .WithTags("Reminders")
+            .RequireAuthorization();
 
         group.MapGet("/", async (IMediator sender, [AsParameters] SearchAllRemindersQuery query) =>
         {

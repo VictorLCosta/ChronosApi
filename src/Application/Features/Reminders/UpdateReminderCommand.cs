@@ -1,3 +1,5 @@
+using Application.Common.Extensions;
+
 namespace Application.Features.Reminders;
 
 public sealed record UpdateReminderResultDto(Guid Id);
@@ -11,11 +13,15 @@ public sealed record UpdateReminderCommand(
     Guid? GoalId = null
 ) : ICommand<UpdateReminderResultDto>;
 
-public class UpdateReminderCommandHandler(IApplicationDbContext context) : ICommandHandler<UpdateReminderCommand, UpdateReminderResultDto>
+public class UpdateReminderCommandHandler(IApplicationDbContext context, ICurrentUserService currentUserService) : ICommandHandler<UpdateReminderCommand, UpdateReminderResultDto>
 {
     public async ValueTask<Result<UpdateReminderResultDto>> Handle(UpdateReminderCommand request, CancellationToken cancellationToken)
     {
-        var reminder = await context.Reminders.FirstOrDefaultAsync(r => r.Id == request.Id, cancellationToken);
+        var userId = currentUserService.GetRequiredUserId();
+
+        var reminder = await context.Reminders
+            .WhereCreatedBy(userId)
+            .FirstOrDefaultAsync(r => r.Id == request.Id, cancellationToken);
 
         if (reminder is null)
             return Result.NotFound();

@@ -61,7 +61,7 @@ public static class IdentityEndpoints
 
         });
 
-        group.MapPost("/reset-password", async (IMediator mediator, ResetPasswordCommand command) =>
+        group.MapPost("/reset-password", async (IMediator mediator, [FromBody] ResetPasswordCommand command) =>
         {
             var result = await mediator.Send(command);
 
@@ -72,7 +72,7 @@ public static class IdentityEndpoints
         .Produces(StatusCodes.Status404NotFound)
         .AllowAnonymous();
 
-        group.MapPost("/change-password", async (IMediator mediator, ChangePasswordCommand command) =>
+        group.MapPost("/change-password", async (IMediator mediator, [FromBody] ChangePasswordCommand command) =>
         {
             var result = await mediator.Send(command);
 
@@ -145,7 +145,7 @@ public static class IdentityEndpoints
         .Produces(StatusCodes.Status401Unauthorized)
         .Produces(StatusCodes.Status404NotFound);
 
-        group.MapGet("/confirm-email", async ([FromServices] IMediator mediator, ConfirmEmailCommand command) =>
+        group.MapGet("/confirm-email", async ([FromServices] IMediator mediator, [AsParameters] ConfirmEmailCommand command) =>
         {
             var result = await mediator.Send(command);
 
@@ -159,7 +159,7 @@ public static class IdentityEndpoints
 
         });
 
-        group.MapGet("/me", async (IMediator mediator, ICurrentUserService currentUserService) =>
+        group.MapGet("/me", async (IMediator mediator, [FromServices] ICurrentUserService currentUserService) =>
         {
             var userId = currentUserService.GetUserId();
 

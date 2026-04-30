@@ -12,7 +12,8 @@ public static class GoalEndpoints
     {
         var group = app
             .MapGroup("/goals")
-            .WithTags("Goals");
+            .WithTags("Goals")
+            .RequireAuthorization();
 
         group.MapGet("/", async (IMediator sender, [AsParameters] SearchAllGoalsQuery query) =>
         {

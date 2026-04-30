@@ -12,7 +12,8 @@ public static class TaskItemEndpoints
     {
         var group = app
             .MapGroup("/tasks")
-            .WithTags("TaskItems");
+            .WithTags("TaskItems")
+            .RequireAuthorization();
 
         group.MapGet("/", async (IMediator sender, [AsParameters] SearchAllTaskItemsQuery query) =>
         {

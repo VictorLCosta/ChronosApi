@@ -9,11 +9,14 @@ public class SearchAllAttachmentsQuery : IQuery<PagedResponse<AttachmentDto>>, I
     public string? Sort { get; set; }
 };
 
-public class SearchAllAttachmentsQueryHandler(IApplicationDbContext context) : IQueryHandler<SearchAllAttachmentsQuery, PagedResponse<AttachmentDto>>
+public class SearchAllAttachmentsQueryHandler(IApplicationDbContext context, ICurrentUserService currentUserService) : IQueryHandler<SearchAllAttachmentsQuery, PagedResponse<AttachmentDto>>
 {
     public async ValueTask<Result<PagedResponse<AttachmentDto>>> Handle(SearchAllAttachmentsQuery request, CancellationToken cancellationToken)
     {
+        var userId = currentUserService.GetRequiredUserId();
+
         var attachments = await context.Attachments
+            .WhereCreatedBy(userId)
             .Select(a => new AttachmentDto(a.Id, a.FileName, a.ContentType, a.SizeBytes, a.StorageUrl, a.TaskItemId))
             .ToPagedResponseAsync(request, cancellationToken);
 
