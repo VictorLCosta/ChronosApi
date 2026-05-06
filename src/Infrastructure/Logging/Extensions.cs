@@ -1,3 +1,5 @@
+using System.Globalization;
+
 using Microsoft.Extensions.Hosting;
 
 using Serilog;
@@ -8,46 +10,42 @@ namespace Infrastructure.Logging;
 
 public static class Extensions
 {
-    extension(IHostApplicationBuilder app)
+    public static IHostApplicationBuilder AddAppLogging(this IHostApplicationBuilder app)
     {
-        public IHostApplicationBuilder AddAppLogging()
+        ArgumentNullException.ThrowIfNull(app);
+        app.Services.AddSingleton<HttpRequestContextEnricher>();
+
+        app.Services.AddSerilog((context, logger) =>
         {
-            ArgumentNullException.ThrowIfNull(app);
+            var httpEnricher = context.GetRequiredService<HttpRequestContextEnricher>();
 
-            app.Services.AddSingleton<HttpRequestContextEnricher>();
+            logger.ReadFrom.Configuration(app.Configuration);
 
-            app.Services.AddSerilog((context, logger) =>
-            {
-                var httpEnricher = context.GetRequiredService<HttpRequestContextEnricher>();
+            logger.Enrich.With(httpEnricher);
 
-                logger.ReadFrom.Configuration(app.Configuration);
+            logger
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+                .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
+                .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Error)
+                .Filter.ByExcluding(Matching.FromSource("Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware"));
 
-                logger.Enrich.With(httpEnricher);
+            SetMinimumLogLevel(logger, "Information");
+        });
 
-                logger
-                    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-                    .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
-                    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Error)
-                    .Filter.ByExcluding(Matching.FromSource("Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware"));
-
-                SetMinimumLogLevel(logger, "Information");
-            });
-
-            return app;
-        }
+        return app;
     }
 
     private static void SetMinimumLogLevel(LoggerConfiguration serilogConfig, string minLogLevel)
     {
-        switch (minLogLevel.ToLower())
+        switch (minLogLevel.ToUpperInvariant())
         {
-            case "debug":
+            case "DEBUG":
                 serilogConfig.MinimumLevel.Debug();
                 break;
-            case "information":
+            case "INFORMATION":
                 serilogConfig.MinimumLevel.Information();
                 break;
-            case "warning":
+            case "WARNING":
                 serilogConfig.MinimumLevel.Warning();
                 break;
             default:

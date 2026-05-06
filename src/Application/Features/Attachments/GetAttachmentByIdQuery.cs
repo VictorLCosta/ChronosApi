@@ -24,7 +24,13 @@ public class GetAttachmentByIdQueryHandler(IApplicationDbContext context, ICurre
         if (attachment is null)
             return Result.NotFound();
 
-        var attachmentDto = new AttachmentDto(attachment.Id, attachment.FileName, attachment.ContentType, attachment.SizeBytes, attachment.StorageUrl, attachment.TaskItemId);
+        var attachmentDto = new AttachmentDto(
+            attachment.Id,
+            attachment.FileName,
+            attachment.ContentType,
+            attachment.SizeBytes,
+            attachment.StorageUrl,
+            attachment.TaskItemId);
 
         return Result.Success<AttachmentDto?>(attachmentDto);
     }

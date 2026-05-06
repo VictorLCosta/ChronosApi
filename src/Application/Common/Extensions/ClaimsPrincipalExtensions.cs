@@ -4,15 +4,12 @@ namespace Application.Common.Extensions;
 
 public static class ClaimsPrincipalExtensions
 {
-    extension(ClaimsPrincipal principal)
-    {
-        public string? GetEmail() =>
-            principal.FindFirstValue(ClaimTypes.Email);
+    public static string? GetEmail(this ClaimsPrincipal principal) =>
+        principal.FindFirstValue(ClaimTypes.Email);
 
-        public string? GetUserId() =>
+    public static string? GetUserId(this ClaimsPrincipal principal) =>
             principal?.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        private string? FindFirstValue(string claimType) =>
-            principal?.FindFirst(claimType)?.Value;
-    }
+    private static string? FindFirstValue(this ClaimsPrincipal principal, string claimType) =>
+        principal?.FindFirst(claimType)?.Value;
 }

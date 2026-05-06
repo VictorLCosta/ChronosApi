@@ -12,6 +12,8 @@ public class CreateTagCommandHandler(IApplicationDbContext context, ICurrentUser
 {
     public async ValueTask<Result<CreateTagResultDto>> Handle(CreateTagCommand request, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var userId = currentUserService.GetRequiredUserId();
 
         var tag = await context.Tags.AddAsync(new Domain.Entities.Tag

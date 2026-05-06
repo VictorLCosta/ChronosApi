@@ -24,6 +24,8 @@ public class AuditInterceptor(ICurrentUserService currentUser, TimeProvider time
 
     public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(eventData);
+
         UpdateEntities(eventData.Context);
         await PublishAuditTrailsAsync(eventData, cancellationToken);
         return await base.SavingChangesAsync(eventData, result, cancellationToken);
@@ -125,9 +127,13 @@ public class AuditInterceptor(ICurrentUserService currentUser, TimeProvider time
 
 public static class Extensions
 {
-    public static bool HasChangedOwnedEntities(this EntityEntry entry) =>
-        entry.References.Any(r =>
+    public static bool HasChangedOwnedEntities(this EntityEntry entry)
+    {
+        ArgumentNullException.ThrowIfNull(entry);
+
+        return entry.References.Any(r =>
             r.TargetEntry != null &&
             r.TargetEntry.Metadata.IsOwned() &&
             (r.TargetEntry.State == EntityState.Added || r.TargetEntry.State == EntityState.Modified));
+    }
 }

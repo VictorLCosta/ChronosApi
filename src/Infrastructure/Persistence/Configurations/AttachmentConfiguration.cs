@@ -9,6 +9,8 @@ public class AttachmentConfiguration : IEntityTypeConfiguration<Attachment>
 {
     public void Configure(EntityTypeBuilder<Attachment> builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         builder.HasKey(a => a.Id);
 
         builder.Property(a => a.FileName)

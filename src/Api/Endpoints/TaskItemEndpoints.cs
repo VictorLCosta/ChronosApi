@@ -6,7 +6,7 @@ using Mediator;
 
 namespace Api.Endpoints;
 
-public static class TaskItemEndpoints
+internal static class TaskItemEndpoints
 {
     public static void MapTaskItemEndpoints(this IEndpointRouteBuilder app)
     {

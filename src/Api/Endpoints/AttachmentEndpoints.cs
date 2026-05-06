@@ -6,7 +6,7 @@ using Mediator;
 
 namespace Api.Endpoints;
 
-public static class AttachmentEndpoints
+internal static class AttachmentEndpoints
 {
     public static void MapAttachmentEndpoints(this IEndpointRouteBuilder app)
     {

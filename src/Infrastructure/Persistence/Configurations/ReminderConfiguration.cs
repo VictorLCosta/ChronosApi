@@ -9,6 +9,8 @@ public class ReminderConfiguration : IEntityTypeConfiguration<Reminder>
 {
     public void Configure(EntityTypeBuilder<Reminder> builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         builder.HasKey(r => r.Id);
 
         builder.Property(r => r.RemindAt)

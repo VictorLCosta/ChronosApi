@@ -1,3 +1,5 @@
+using System.Globalization;
+
 using Serilog;
 using Serilog.Core;
 

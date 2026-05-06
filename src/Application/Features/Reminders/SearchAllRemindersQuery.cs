@@ -18,12 +18,16 @@ public class SearchAllRemindersQueryHandler(IApplicationDbContext context, ICurr
 {
     public async ValueTask<Result<PagedResponse<ReminderDto>>> Handle(SearchAllRemindersQuery request, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var userId = currentUserService.GetRequiredUserId();
 
         var reminders = await context.Reminders
             .AsNoTracking()
             .WhereCreatedBy(userId)
+            .OrderByDescending(r => r.RemindAt)
             .Select(r => new ReminderDto(r.Id, r.RemindAt, r.IsSent, r.OffsetMinutes, r.TaskItemId, r.GoalId))
+            .ApplySort(request.Sort)
             .ToPagedResponseAsync(request, cancellationToken);
 
         return Result.Success(reminders);

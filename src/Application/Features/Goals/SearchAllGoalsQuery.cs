@@ -24,6 +24,8 @@ public class SearchAllGoalsQueryHandler(IApplicationDbContext context, ICurrentU
 {
     public async ValueTask<Result<PagedResponse<GoalDto>>> Handle(SearchAllGoalsQuery request, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var searchQuery = request.Q.NormalizeSearchQuery();
         var userId = currentUserService.GetRequiredUserId();
 

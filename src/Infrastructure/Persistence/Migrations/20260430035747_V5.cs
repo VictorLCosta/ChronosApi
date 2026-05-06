@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+
 using NpgsqlTypes;
 
 #nullable disable
@@ -11,6 +12,8 @@ namespace Infrastructure.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            ArgumentNullException.ThrowIfNull(migrationBuilder);
+
             migrationBuilder.AddColumn<NpgsqlTsVector>(
                 name: "SearchVector",
                 table: "Projects",
@@ -113,6 +116,8 @@ namespace Infrastructure.Persistence.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            ArgumentNullException.ThrowIfNull(migrationBuilder);
+
             migrationBuilder.DropIndex(
                 name: "IX_Tasks_CreatedBy",
                 table: "Tasks");

@@ -11,5 +11,5 @@ public class AppUser : IdentityUser
     public Uri? AvatarUrl { get; set; }
     public bool IsActive { get; set; }
 
-    public ICollection<RefreshToken> RefreshTokens { get; set; } = [];
+    public ICollection<RefreshToken> RefreshTokens { get; init; } = [];
 }

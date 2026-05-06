@@ -16,6 +16,8 @@ public class CachingBehavior<TMessage, TResponse>(
 {
     public async ValueTask<TResponse> Handle(TMessage message, MessageHandlerDelegate<TMessage, TResponse> next, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(next);
+
         TResponse response;
         if (message.BypassCache) return await next(message, cancellationToken);
         async Task<TResponse> GetResponseAndAddToCache()

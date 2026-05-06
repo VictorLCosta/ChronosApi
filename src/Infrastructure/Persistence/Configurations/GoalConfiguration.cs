@@ -10,6 +10,8 @@ public class GoalConfiguration : IEntityTypeConfiguration<Goal>
 {
     public void Configure(EntityTypeBuilder<Goal> builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         builder.HasKey(g => g.Id);
 
         builder.Property(g => g.Title)

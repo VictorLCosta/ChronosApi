@@ -9,6 +9,8 @@ public class GoalLogConfiguration : IEntityTypeConfiguration<GoalLog>
 {
     public void Configure(EntityTypeBuilder<GoalLog> builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         builder.HasKey(gl => gl.Id);
 
         builder.Property(gl => gl.Date)

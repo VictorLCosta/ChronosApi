@@ -13,12 +13,22 @@ public class SearchAllAttachmentsQueryHandler(IApplicationDbContext context, ICu
 {
     public async ValueTask<Result<PagedResponse<AttachmentDto>>> Handle(SearchAllAttachmentsQuery request, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var userId = currentUserService.GetRequiredUserId();
 
         var attachments = await context.Attachments
             .AsNoTracking()
             .WhereCreatedBy(userId)
-            .Select(a => new AttachmentDto(a.Id, a.FileName, a.ContentType, a.SizeBytes, a.StorageUrl, a.TaskItemId))
+            .OrderByDescending(a => a.Created)
+            .Select(a => new AttachmentDto(
+                a.Id,
+                a.FileName,
+                a.ContentType,
+                a.SizeBytes,
+                a.StorageUrl,
+                a.TaskItemId))
+            .ApplySort(request.Sort)
             .ToPagedResponseAsync(request, cancellationToken);
 
         return Result.Success(attachments);

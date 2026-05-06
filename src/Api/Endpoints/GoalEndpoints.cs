@@ -6,7 +6,7 @@ using Mediator;
 
 namespace Api.Endpoints;
 
-public static class GoalEndpoints
+internal static class GoalEndpoints
 {
     public static void MapGoalEndpoints(this IEndpointRouteBuilder app)
     {

@@ -18,6 +18,8 @@ public class CreateTaskItemCommandHandler(IApplicationDbContext context, ICurren
 {
     public async ValueTask<Result<CreateTaskItemResultDto>> Handle(CreateTaskItemCommand request, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var userId = currentUserService.GetRequiredUserId();
 
         var taskItem = await context.Tasks.AddAsync(new Domain.Entities.TaskItem

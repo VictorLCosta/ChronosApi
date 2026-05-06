@@ -8,7 +8,7 @@ public class SearchAllTagsQuery : IQuery<PagedResponse<TagDto>>, IPagedQuery, IC
     public int? PageSize { get; set; } = 10;
     public string? Sort { get; set; }
 
-    public bool BypassCache => false;
+    public bool BypassCache => true;
     public string CacheKey => $"SearchAllTagsQuery:{PageNumber}:{PageSize}:{Sort}";
     public int SlidingExpirationInMinutes => 5;
     public int AbsoluteExpirationInMinutes => 5;
@@ -18,12 +18,16 @@ public class SearchAllTagsQueryHandler(IApplicationDbContext context, ICurrentUs
 {
     public async ValueTask<Result<PagedResponse<TagDto>>> Handle(SearchAllTagsQuery request, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var userId = currentUserService.GetRequiredUserId();
 
         var tags = await context.Tags
             .AsNoTracking()
             .WhereCreatedBy(userId)
+            .OrderBy(t => t.Name)
             .Select(t => new TagDto(t.Id, t.Name))
+            .ApplySort(request.Sort)
             .ToPagedResponseAsync(request, cancellationToken);
 
         return Result.Success(tags);

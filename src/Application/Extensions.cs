@@ -4,8 +4,6 @@ using Application.Common.Behaviors;
 
 using FluentValidation;
 
-using Mediator;
-
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 

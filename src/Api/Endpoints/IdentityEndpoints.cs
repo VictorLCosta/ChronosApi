@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Endpoints;
 
-public static class IdentityEndpoints
+internal static class IdentityEndpoints
 {
     public static void MapIdentityEndpoints(this IEndpointRouteBuilder app)
     {

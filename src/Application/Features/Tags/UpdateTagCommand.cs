@@ -10,6 +10,8 @@ public class UpdateTagCommandHandler(IApplicationDbContext context, ICurrentUser
 {
     public async ValueTask<Result<UpdateTagResultDto>> Handle(UpdateTagCommand request, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var userId = currentUserService.GetRequiredUserId();
 
         var tag = await context.Tags

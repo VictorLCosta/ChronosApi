@@ -9,6 +9,9 @@ public class SecurityHeadersMiddleware(IOptions<SecurityHeadersOptions> options)
 
     public Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(next);
+
         if (!_options.Enabled)
         {
             return next(context);

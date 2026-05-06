@@ -6,7 +6,7 @@ using Mediator;
 
 namespace Api.Endpoints;
 
-public static class TagEndpoints
+internal static class TagEndpoints
 {
     public static void MapTagEndpoints(this IEndpointRouteBuilder app)
     {

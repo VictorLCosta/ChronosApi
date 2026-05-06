@@ -28,6 +28,8 @@ public abstract class BaseDbContext(DbContextOptions options, IHostEnvironment e
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        ArgumentNullException.ThrowIfNull(optionsBuilder);
+
         if (environment.IsDevelopment())
         {
             optionsBuilder.EnableSensitiveDataLogging();
@@ -37,6 +39,8 @@ public abstract class BaseDbContext(DbContextOptions options, IHostEnvironment e
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
+        ArgumentNullException.ThrowIfNull(configurationBuilder);
+
         configurationBuilder
             .Properties<DateTime>()
             .HaveConversion<DateTimeToDateTimeUtc>();
@@ -46,6 +50,8 @@ public abstract class BaseDbContext(DbContextOptions options, IHostEnvironment e
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
         base.OnModelCreating(builder);

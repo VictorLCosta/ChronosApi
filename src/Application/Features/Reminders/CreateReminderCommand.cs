@@ -17,6 +17,8 @@ public class CreateReminderCommandHandler(IApplicationDbContext context, ICurren
 {
     public async ValueTask<Result<CreateReminderResultDto>> Handle(CreateReminderCommand request, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var userId = currentUserService.GetRequiredUserId();
 
         var reminder = await context.Reminders.AddAsync(new Domain.Entities.Reminder

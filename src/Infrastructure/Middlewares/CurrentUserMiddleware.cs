@@ -8,6 +8,9 @@ public class CurrentUserMiddleware(ICurrentUserService currentUserService) : IMi
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(next);
+
         currentUserService.SetCurrentUser(context.User);
         await next(context);
     }

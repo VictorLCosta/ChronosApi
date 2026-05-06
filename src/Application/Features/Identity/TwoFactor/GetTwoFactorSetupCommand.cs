@@ -1,11 +1,10 @@
 using Application.Common.Identity.Services;
-using Application.Common.Interfaces;
 
 namespace Application.Features.Identity.TwoFactor;
 
 public sealed record TwoFactorSetupResponse(
     string SharedKey,
-    string AuthenticatorUri,
+    Uri AuthenticatorUri,
     bool IsEnabled
 );
 

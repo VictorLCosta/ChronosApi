@@ -22,6 +22,8 @@ public class SearchAllTaskItemsQueryHandler(IApplicationDbContext context, ICurr
 {
     public async ValueTask<Result<PagedResponse<TaskItemDto>>> Handle(SearchAllTaskItemsQuery request, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var searchQuery = request.Q.NormalizeSearchQuery();
 
         var userId = currentUserService.GetRequiredUserId();

@@ -4,6 +4,6 @@ public class Tag : BaseEntity
 {
     public string Name { get; set; } = null!;
 
-    public ICollection<TaskItem> TaskItems { get; set; } = [];
-    public ICollection<Goal> Goals { get; set; } = [];
+    public ICollection<TaskItem> TaskItems { get; init; } = [];
+    public ICollection<Goal> Goals { get; init; } = [];
 }

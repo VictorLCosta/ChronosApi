@@ -55,6 +55,8 @@ public sealed class TwoFactorService(
 
     public async Task<Result<TwoFactorEnableResult>> EnableAsync(string userId, string code, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(code);
+
         var user = await userManager.FindByIdAsync(userId);
         if (user is null || !user.IsActive)
         {
@@ -85,6 +87,8 @@ public sealed class TwoFactorService(
 
     public async Task<Result> VerifyAsync(string userId, string code, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(code);
+
         var user = await userManager.FindByIdAsync(userId);
         if (user is null || !user.IsActive)
         {
@@ -118,16 +122,16 @@ public sealed class TwoFactorService(
         code.Replace(" ", string.Empty, StringComparison.Ordinal)
             .Replace("-", string.Empty, StringComparison.Ordinal);
 
-    private static string BuildAuthenticatorUri(string issuer, string email, string key)
+    private static Uri BuildAuthenticatorUri(string issuer, string email, string key)
     {
         var encodedIssuer = Uri.EscapeDataString(issuer);
         var encodedEmail = Uri.EscapeDataString(email);
 
-        return string.Format(
+        return new Uri(string.Format(
             CultureInfo.InvariantCulture,
             "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6",
             encodedIssuer,
             encodedEmail,
-            key);
+            key));
     }
 }

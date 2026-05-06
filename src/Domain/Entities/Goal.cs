@@ -16,8 +16,8 @@ public class Goal : BaseEntity
     public Guid? ProjectId { get; set; }
     public Project? Project { get; set; }
 
-    public ICollection<TaskItem> Tasks { get; set; } = [];
-    public ICollection<Tag> Tags { get; set; } = [];
+    public ICollection<TaskItem> Tasks { get; init; } = [];
+    public ICollection<Tag> Tags { get; init; } = [];
 
     public RecurrenceRule RecurrenceRule { get; set; } = null!;
 

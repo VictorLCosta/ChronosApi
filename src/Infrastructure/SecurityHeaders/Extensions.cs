@@ -4,12 +4,10 @@ namespace Infrastructure.SecurityHeaders;
 
 public static class Extensions
 {
-    extension(IApplicationBuilder app)
+    public static IApplicationBuilder ConfigureSecurityHeaders(this IApplicationBuilder app)
     {
-        public IApplicationBuilder ConfigureSecurityHeaders()
-        {
-            app.UseMiddleware<SecurityHeadersMiddleware>();
-            return app;
-        }
+        app.UseMiddleware<SecurityHeadersMiddleware>();
+        return app;
     }
+
 }

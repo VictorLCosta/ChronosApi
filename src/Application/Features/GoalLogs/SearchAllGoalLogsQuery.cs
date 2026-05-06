@@ -18,12 +18,16 @@ public class SearchAllGoalLogsQueryHandler(IApplicationDbContext context, ICurre
 {
     public async ValueTask<Result<PagedResponse<GoalLogDto>>> Handle(SearchAllGoalLogsQuery request, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var userId = currentUserService.GetRequiredUserId();
 
         var goalLogs = await context.GoalLogs
             .AsNoTracking()
             .WhereCreatedBy(userId)
+            .OrderByDescending(gl => gl.Date)
             .Select(gl => new GoalLogDto(gl.Id, gl.Date, gl.Notes, gl.Completed, gl.GoalId))
+            .ApplySort(request.Sort)
             .ToPagedResponseAsync(request, cancellationToken);
 
         return Result.Success(goalLogs);

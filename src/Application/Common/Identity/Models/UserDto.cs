@@ -14,5 +14,5 @@ public class UserDto
 
     public bool EmailConfirmed { get; set; }
 
-    public string? AvatarUrl { get; set; }
+    public Uri? AvatarUrl { get; set; }
 }

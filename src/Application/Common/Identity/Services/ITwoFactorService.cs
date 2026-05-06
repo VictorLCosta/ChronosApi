@@ -10,7 +10,7 @@ public interface ITwoFactorService
 
 public sealed record TwoFactorSetupInfo(
     string SharedKey,
-    string AuthenticatorUri,
+    Uri AuthenticatorUri,
     bool IsEnabled
 );
 

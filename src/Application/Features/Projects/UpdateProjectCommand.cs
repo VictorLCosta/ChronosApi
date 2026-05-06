@@ -10,6 +10,8 @@ public class UpdateProjectCommandHandler(IApplicationDbContext context, ICurrent
 {
     public async ValueTask<Result<UpdateProjectResultDto>> Handle(UpdateProjectCommand request, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var userId = currentUserService.GetRequiredUserId();
 
         var project = await context.Projects

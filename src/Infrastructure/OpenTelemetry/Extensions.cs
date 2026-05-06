@@ -17,35 +17,34 @@ namespace Infrastructure.OpenTelemetry;
 
 public static class Extensions
 {
-    extension(IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder ConfigureOpenTelemetry(this IHostApplicationBuilder builder)
     {
-        public IHostApplicationBuilder ConfigureOpenTelemetry()
+        ArgumentNullException.ThrowIfNull(builder);
+
+        builder.Services.AddOptions<OpenTelemetryOptions>()
+            .BindConfiguration(SectionName)
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        var options = new OpenTelemetryOptions();
+        builder.Configuration.GetSection(SectionName).Bind(options);
+
+        if (options.Enabled)
         {
-            ArgumentNullException.ThrowIfNull(builder);
-
-            builder.Services.AddOptions<OpenTelemetryOptions>()
-                .BindConfiguration(SectionName)
-                .ValidateDataAnnotations()
-                .ValidateOnStart();
-
-            var options = new OpenTelemetryOptions();
-            builder.Configuration.GetSection(SectionName).Bind(options);
-
-            if (options.Enabled)
-            {
-                return builder;
-            }
-
-            var resourceBuilder = ResourceBuilder
-                .CreateDefault()
-                .AddService(serviceName: builder.Environment.ApplicationName);
-
-            builder.Services.AddSingleton(new ActivitySource(builder.Environment.ApplicationName));
-
-            ConfigureMetricsAndTracing(builder, options, resourceBuilder);
-
             return builder;
         }
+
+        var resourceBuilder = ResourceBuilder
+            .CreateDefault()
+            .AddService(serviceName: builder.Environment.ApplicationName);
+
+        using var activitySource = new ActivitySource(builder.Environment.ApplicationName);
+
+        builder.Services.AddSingleton(activitySource);
+
+        ConfigureMetricsAndTracing(builder, options, resourceBuilder);
+
+        return builder;
     }
 
     private static void ConfigureMetricsAndTracing(
@@ -118,11 +117,11 @@ public static class Extensions
             otlp.Endpoint = new Uri(options.Endpoint);
         }
 
-        var protocol = options.Protocol?.Trim().ToLowerInvariant();
+        var protocol = options.Protocol?.Trim().ToUpperInvariant();
         otlp.Protocol = protocol switch
         {
-            "grpc" => OtlpExportProtocol.Grpc,
-            "http/protobuf" => OtlpExportProtocol.HttpProtobuf,
+            "GRPC" => OtlpExportProtocol.Grpc,
+            "HTTP/PROTOBUF" => OtlpExportProtocol.HttpProtobuf,
             _ => otlp.Protocol
         };
     }

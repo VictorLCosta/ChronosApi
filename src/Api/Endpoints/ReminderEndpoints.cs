@@ -6,7 +6,7 @@ using Mediator;
 
 namespace Api.Endpoints;
 
-public static class ReminderEndpoints
+internal static class ReminderEndpoints
 {
     public static void MapReminderEndpoints(this IEndpointRouteBuilder app)
     {

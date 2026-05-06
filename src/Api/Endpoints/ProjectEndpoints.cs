@@ -8,7 +8,7 @@ using Mediator;
 
 namespace Api.Endpoints;
 
-public static class ProjectEndpoints
+internal static class ProjectEndpoints
 {
     public static void MapProjectEndpoints(this IEndpointRouteBuilder app)
     {

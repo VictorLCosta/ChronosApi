@@ -10,8 +10,7 @@ public record RefreshTokenCommand(string Token, string RefreshToken) : ICommand<
 public class RefreshTokenCommandHandler(
     IIdentityService identityService,
     IRequestContext requestContext,
-    ITokenService tokenService,
-    ILogger<RefreshTokenCommandHandler> logger) : ICommandHandler<RefreshTokenCommand, RefreshTokenResponse>
+    ITokenService tokenService) : ICommandHandler<RefreshTokenCommand, RefreshTokenResponse>
 {
     public async ValueTask<Result<RefreshTokenResponse>> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
     {

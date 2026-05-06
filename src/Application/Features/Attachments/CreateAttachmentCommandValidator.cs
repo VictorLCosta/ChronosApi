@@ -25,9 +25,9 @@ public class CreateAttachmentCommandValidator : AbstractValidator<CreateAttachme
             .WithMessage("File size must not exceed 50MB");
 
         RuleFor(x => x.StorageUrl)
-            .NotEmpty()
+            .NotNull()
             .WithMessage("StorageUrl is required")
-            .Must(url => Uri.TryCreate(url, UriKind.Absolute, out _))
+            .Must(url => url is not null && url.IsAbsoluteUri)
             .WithMessage("StorageUrl must be a valid URL");
 
         RuleFor(x => x.TaskItemId)

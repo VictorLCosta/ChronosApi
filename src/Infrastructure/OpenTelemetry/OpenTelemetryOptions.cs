@@ -8,14 +8,14 @@ public class OpenTelemetryOptions
 
     public bool Enabled { get; set; }
 
-    public ExporterOptions Exporter { get; set; } = new();
+    internal ExporterOptions Exporter { get; set; } = new();
 
-    public sealed class ExporterOptions
+    internal sealed class ExporterOptions
     {
         public OtlpOptions Otlp { get; set; } = new();
     }
 
-    public sealed class OtlpOptions
+    internal sealed class OtlpOptions
     {
         public bool Enabled { get; set; } = true;
 

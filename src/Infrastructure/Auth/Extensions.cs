@@ -11,6 +11,9 @@ public static class Extensions
 {
     public static IServiceCollection AddJwtAuth(this IServiceCollection services, IConfiguration configuration)
     {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
+
         services.AddOptions<JwtOptions>()
             .BindConfiguration("JwtOptions")
             .ValidateDataAnnotations()

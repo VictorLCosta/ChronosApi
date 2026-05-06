@@ -19,6 +19,8 @@ public class UpdateTaskItemCommandHandler(IApplicationDbContext context, ICurren
 {
     public async ValueTask<Result<UpdateTaskItemResultDto>> Handle(UpdateTaskItemCommand request, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var userId = currentUserService.GetRequiredUserId();
 
         var taskItem = await context.Tasks

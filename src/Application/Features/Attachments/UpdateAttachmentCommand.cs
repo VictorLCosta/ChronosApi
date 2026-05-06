@@ -9,7 +9,7 @@ public sealed record UpdateAttachmentCommand(
     string? FileName = null,
     string? ContentType = null,
     long? SizeBytes = null,
-    string? StorageUrl = null,
+    Uri? StorageUrl = null,
     Guid? TaskItemId = null
 ) : ICommand<UpdateAttachmentResultDto>;
 
@@ -17,6 +17,8 @@ public class UpdateAttachmentCommandHandler(IApplicationDbContext context, ICurr
 {
     public async ValueTask<Result<UpdateAttachmentResultDto>> Handle(UpdateAttachmentCommand request, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var userId = currentUserService.GetRequiredUserId();
 
         var attachment = await context.Attachments

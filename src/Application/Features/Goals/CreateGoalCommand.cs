@@ -18,6 +18,8 @@ public class CreateGoalCommandHandler(IApplicationDbContext context, ICurrentUse
 {
     public async ValueTask<Result<CreateGoalResultDto>> Handle(CreateGoalCommand request, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var userId = currentUserService.GetRequiredUserId();
 
         var goal = await context.Goals.AddAsync(new Domain.Entities.Goal

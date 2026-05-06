@@ -16,6 +16,8 @@ public class UpdateGoalLogCommandHandler(IApplicationDbContext context, ICurrent
 {
     public async ValueTask<Result<UpdateGoalLogResultDto>> Handle(UpdateGoalLogCommand request, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var userId = currentUserService.GetRequiredUserId();
 
         var goalLog = await context.GoalLogs

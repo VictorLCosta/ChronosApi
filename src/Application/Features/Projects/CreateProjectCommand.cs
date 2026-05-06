@@ -10,6 +10,8 @@ public class CreateProjectCommandHandler(IApplicationDbContext context, ICurrent
 {
     public async ValueTask<Result<CreateProjectResultDto>> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var userId = currentUserService.GetRequiredUserId();
 
         var project = await context.Projects.AddAsync(new Domain.Entities.Project

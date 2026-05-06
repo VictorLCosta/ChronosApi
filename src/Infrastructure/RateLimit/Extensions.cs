@@ -10,55 +10,54 @@ namespace Infrastructure.RateLimit;
 
 public static class Extensions
 {
-    extension(IServiceCollection services)
+    public static IServiceCollection AddRateLimit(this IServiceCollection services, IConfiguration config)
     {
-        public IServiceCollection AddRateLimit(IConfiguration config)
-        {
-            services.Configure<RateLimitOptions>(config.GetSection(nameof(RateLimitOptions)));
+        ArgumentNullException.ThrowIfNull(config);
 
-            var options = config.GetSection(nameof(RateLimitOptions)).Get<RateLimitOptions>();
-            if (options is { EnableRateLimiting: true })
+        services.Configure<RateLimitOptions>(config.GetSection(nameof(RateLimitOptions)));
+
+        var options = config.GetSection(nameof(RateLimitOptions)).Get<RateLimitOptions>();
+        if (options is { EnableRateLimiting: true })
+        {
+            services.AddRateLimiter(rateLimitOptions =>
             {
-                services.AddRateLimiter(rateLimitOptions =>
+                rateLimitOptions.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
                 {
-                    rateLimitOptions.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
-                    {
-                        return RateLimitPartition.GetFixedWindowLimiter(partitionKey: httpContext.Request.Headers.Host.ToString(),
-                            factory: _ => new FixedWindowRateLimiterOptions
-                            {
-                                PermitLimit = options.PermitLimit,
-                                Window = TimeSpan.FromSeconds(options.WindowInSeconds)
-                            });
-                    });
-
-                    rateLimitOptions.RejectionStatusCode = options.RejectionStatusCode;
-                    rateLimitOptions.OnRejected = async (context, token) =>
-                    {
-                        var message = BuildRateLimitResponseMessage(context);
-
-                        await context.HttpContext.Response.WriteAsync(message, cancellationToken: token);
-                    };
+                    return RateLimitPartition.GetFixedWindowLimiter(partitionKey: httpContext.Request.Headers.Host.ToString(),
+                        factory: _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = options.PermitLimit,
+                            Window = TimeSpan.FromSeconds(options.WindowInSeconds)
+                        });
                 });
-            }
 
-            return services;
+                rateLimitOptions.RejectionStatusCode = options.RejectionStatusCode;
+                rateLimitOptions.OnRejected = async (context, token) =>
+                {
+                    var message = BuildRateLimitResponseMessage(context);
+
+                    await context.HttpContext.Response.WriteAsync(message, cancellationToken: token);
+                };
+            });
         }
+
+        return services;
     }
 
-    extension(IApplicationBuilder app)
+    public static IApplicationBuilder UseRateLimit(this IApplicationBuilder app)
     {
-        public IApplicationBuilder UseRateLimit()
+        ArgumentNullException.ThrowIfNull(app);
+
+        var options = app.ApplicationServices.GetRequiredService<IOptions<RateLimitOptions>>().Value;
+
+        if (options.EnableRateLimiting)
         {
-            var options = app.ApplicationServices.GetRequiredService<IOptions<RateLimitOptions>>().Value;
-
-            if (options.EnableRateLimiting)
-            {
-                app.UseRateLimiter();
-            }
-
-            return app;
+            app.UseRateLimiter();
         }
+
+        return app;
     }
+
 
     private static string BuildRateLimitResponseMessage(OnRejectedContext onRejectedContext)
     {

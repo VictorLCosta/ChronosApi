@@ -2,7 +2,7 @@ using Application.Common.Extensions;
 
 namespace Application.Features.Attachments;
 
-public sealed record AttachmentDto(Guid Id, string FileName, string ContentType, long SizeBytes, string StorageUrl, Guid TaskItemId);
+public sealed record AttachmentDto(Guid Id, string FileName, string ContentType, long SizeBytes, Uri StorageUrl, Guid TaskItemId);
 
 public sealed record CreateAttachmentResultDto(Guid Id);
 
@@ -10,7 +10,7 @@ public sealed record CreateAttachmentCommand(
     string FileName,
     string ContentType,
     long SizeBytes,
-    string StorageUrl,
+    Uri StorageUrl,
     Guid TaskItemId
 ) : ICommand<CreateAttachmentResultDto>;
 
@@ -18,6 +18,8 @@ public class CreateAttachmentCommandHandler(IApplicationDbContext context, ICurr
 {
     public async ValueTask<Result<CreateAttachmentResultDto>> Handle(CreateAttachmentCommand request, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var userId = currentUserService.GetRequiredUserId();
 
         var attachment = await context.Attachments.AddAsync(new Domain.Entities.Attachment

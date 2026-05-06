@@ -3,7 +3,7 @@ namespace Domain.Entities;
 public class Reminder : BaseEntity
 {
     public DateTime RemindAt { get; set; }
-    public bool IsSent { get; set; } = false;
+    public bool IsSent { get; set; }
 
     // relative reminder (e.g., 15 minutes before) can be expressed with OffsetMinutes
     public int? OffsetMinutes { get; set; }

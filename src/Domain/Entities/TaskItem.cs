@@ -13,7 +13,7 @@ public class TaskItem : BaseEntity
     public DateTime? StartDate { get; set; }
 
     public RecurrenceRule? RecurrenceRule { get; set; }
-    public ICollection<Reminder> Reminders { get; set; } = [];
+    public ICollection<Reminder> Reminders { get; init; } = [];
 
     public Guid? GoalId { get; set; }
     public Goal? Goal { get; set; }
@@ -23,9 +23,9 @@ public class TaskItem : BaseEntity
 
     public Guid? ParentTaskId { get; set; } // for parent-subtask relationship
     public TaskItem? ParentTask { get; set; }
-    public ICollection<TaskItem> SubTasks { get; set; } = [];
+    public ICollection<TaskItem> SubTasks { get; init; } = [];
 
-    public ICollection<Tag> Tags { get; set; } = [];
+    public ICollection<Tag> Tags { get; init; } = [];
 
     public NpgsqlTsVector SearchVector { get; set; } = default!;
 }

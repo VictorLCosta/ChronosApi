@@ -17,6 +17,8 @@ public class CreateGoalLogCommandHandler(IApplicationDbContext context, ICurrent
 {
     public async ValueTask<Result<CreateGoalLogResultDto>> Handle(CreateGoalLogCommand request, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var userId = currentUserService.GetRequiredUserId();
 
         var goalLog = await context.GoalLogs.AddAsync(new Domain.Entities.GoalLog

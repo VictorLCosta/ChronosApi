@@ -1,5 +1,5 @@
-using Application.Features.Goals;
 using Application.Common.Extensions;
+using Application.Features.Goals;
 
 namespace Application.Features.GoalLogs;
 

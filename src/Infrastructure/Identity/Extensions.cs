@@ -11,37 +11,35 @@ namespace Infrastructure.Identity;
 
 public static class Extensions
 {
-    extension(IServiceCollection services)
+
+    public static IServiceCollection AddAppIdentity(this IServiceCollection services)
     {
-        public IServiceCollection AddAppIdentity()
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<IRequestContext, RequestContext>();
+        services.AddScoped<IIdentityService, IdentityService>();
+        services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<ITwoFactorService, TwoFactorService>();
+        services.AddScoped<IUserPasswordService, UserPasswordService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddSingleton(TimeProvider.System);
+
+        services.AddIdentity<AppUser, AppRole>(options =>
         {
-            services.AddScoped<ICurrentUserService, CurrentUserService>();
-            services.AddScoped<IRequestContext, RequestContext>();
-            services.AddScoped<IIdentityService, IdentityService>();
-            services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<ITwoFactorService, TwoFactorService>();
-            services.AddScoped<IUserPasswordService, UserPasswordService>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddSingleton(TimeProvider.System);
+            options.Password.RequireDigit = false;
+            options.Password.RequireLowercase = true;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequireUppercase = true;
+            options.Password.RequiredLength = 12;
 
-            services.AddIdentity<AppUser, AppRole>(options =>
-            {
-                options.Password.RequireDigit = false;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = true;
-                options.Password.RequiredLength = 12;
+            options.Lockout.MaxFailedAccessAttempts = 3;
 
-                options.Lockout.MaxFailedAccessAttempts = 3;
+            options.SignIn.RequireConfirmedEmail = true;
 
-                options.SignIn.RequireConfirmedEmail = true;
+            options.User.RequireUniqueEmail = true;
+        })
+        .AddDefaultTokenProviders()
+        .AddEntityFrameworkStores<ApplicationDbContext>();
 
-                options.User.RequireUniqueEmail = true;
-            })
-            .AddDefaultTokenProviders()
-            .AddEntityFrameworkStores<ApplicationDbContext>();
-
-            return services;
-        }
+        return services;
     }
 }
