@@ -1,6 +1,5 @@
 using Application.Common.Identity.Models;
 using Application.Common.Identity.Services;
-using Application.Common.Interfaces;
 using Application.Features.Identity.Passwords;
 using Application.Features.Identity.Tokens.AccessToken;
 using Application.Features.Identity.Tokens.RefreshToken;
@@ -8,6 +7,8 @@ using Application.Features.Identity.TwoFactor;
 using Application.Features.Identity.Users;
 
 using Ardalis.Result.AspNetCore;
+
+using CrossCutting.Interfaces;
 
 using Mediator;
 

@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace Application.Common.Extensions;
+namespace CrossCutting.ExtensionMethods;
 
 public static class ClaimsPrincipalExtensions
 {

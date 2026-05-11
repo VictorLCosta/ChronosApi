@@ -1,7 +1,8 @@
 using System.Text.Json.Serialization;
 
 using Application.Common.Identity.Services;
-using Application.Common.Interfaces;
+
+using CrossCutting.Interfaces;
 
 namespace Application.Features.Identity.Passwords;
 

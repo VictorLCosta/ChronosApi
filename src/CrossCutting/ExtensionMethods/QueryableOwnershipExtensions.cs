@@ -1,6 +1,6 @@
 using Domain.Common;
 
-namespace Application.Common.Extensions;
+namespace CrossCutting.ExtensionMethods;
 
 public static class QueryableOwnershipExtensions
 {

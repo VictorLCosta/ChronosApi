@@ -1,5 +1,6 @@
-using Application.Common.Extensions;
 using Application.Features.Goals;
+
+using CrossCutting.ExtensionMethods;
 
 namespace Application.Features.GoalLogs;
 

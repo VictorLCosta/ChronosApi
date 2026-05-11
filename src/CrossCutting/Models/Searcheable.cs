@@ -1,4 +1,4 @@
-namespace Application.Common.Models;
+namespace CrossCutting.Models;
 
 public class Searcheable
 {

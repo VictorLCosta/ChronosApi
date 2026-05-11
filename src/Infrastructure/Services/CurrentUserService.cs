@@ -1,7 +1,7 @@
 using System.Security.Claims;
 
-using Application.Common.Extensions;
-using Application.Common.Interfaces;
+using CrossCutting.ExtensionMethods;
+using CrossCutting.Interfaces;
 
 namespace Infrastructure.Services;
 

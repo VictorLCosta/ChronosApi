@@ -1,6 +1,6 @@
-using Application.Common.Exceptions;
+using CrossCutting.Exceptions;
 
-namespace Application.Common.Extensions;
+namespace CrossCutting.ExtensionMethods;
 
 public static class CurrentUserServiceExtensions
 {

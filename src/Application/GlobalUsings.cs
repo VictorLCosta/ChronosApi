@@ -4,6 +4,9 @@ global using Application.Common.Models;
 
 global using Ardalis.Result;
 
+global using CrossCutting.Interfaces;
+global using CrossCutting.Models;
+
 global using Microsoft.EntityFrameworkCore;
 
 global using Unit = Mediator.Unit;

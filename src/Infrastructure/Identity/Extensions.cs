@@ -1,5 +1,6 @@
 using Application.Common.Identity.Services;
-using Application.Common.Interfaces;
+
+using CrossCutting.Interfaces;
 
 using Infrastructure.Identity.Services;
 using Infrastructure.Persistence;

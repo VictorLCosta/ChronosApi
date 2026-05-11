@@ -3,9 +3,10 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-using Application.Common.Exceptions;
 using Application.Common.Identity.Services;
-using Application.Common.Interfaces;
+
+using CrossCutting.Exceptions;
+using CrossCutting.Interfaces;
 
 using Infrastructure.Persistence;
 

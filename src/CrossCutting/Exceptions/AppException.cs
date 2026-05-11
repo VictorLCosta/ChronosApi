@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace Application.Common.Exceptions;
+namespace CrossCutting.Exceptions;
 
 public class AppException(string message, HttpStatusCode statusCode, Exception? innerException = null) : Exception(message, innerException)
 {

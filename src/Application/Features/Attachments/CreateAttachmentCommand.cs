@@ -1,4 +1,4 @@
-using Application.Common.Extensions;
+using CrossCutting.ExtensionMethods;
 
 namespace Application.Features.Attachments;
 

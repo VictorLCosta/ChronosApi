@@ -2,7 +2,7 @@ using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Application.Common.Extensions;
+namespace CrossCutting.ExtensionMethods;
 
 public static class LinqExtensions
 {

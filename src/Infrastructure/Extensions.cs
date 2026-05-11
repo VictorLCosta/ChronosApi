@@ -1,5 +1,7 @@
 using Application.Common.Interfaces;
 
+using CrossCutting.Interfaces;
+
 using Infrastructure.Auth;
 using Infrastructure.Caching;
 using Infrastructure.Cors;

@@ -1,4 +1,4 @@
-using Application.Common.Exceptions;
+using CrossCutting.Exceptions;
 
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;

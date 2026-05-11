@@ -1,4 +1,4 @@
-using Application.Common.Extensions;
+using CrossCutting.ExtensionMethods;
 
 using Microsoft.AspNetCore.Http;
 
