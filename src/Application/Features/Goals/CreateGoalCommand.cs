@@ -11,6 +11,7 @@ public sealed record CreateGoalCommand(
     string? Notes = null,
     GoalStatus Status = GoalStatus.NotStarted,
     PriorityLevel Priority = PriorityLevel.Medium,
+    RecurrenceRuleDto? RecurrenceRule = null,
     Guid? ProjectId = null
 ) : ICommand<CreateGoalResultDto>;
 
@@ -28,6 +29,7 @@ public class CreateGoalCommandHandler(IApplicationDbContext context, ICurrentUse
             Notes = request.Notes,
             Status = request.Status,
             Priority = request.Priority,
+            RecurrenceRule = request.RecurrenceRule?.ToValueObject() ?? new Domain.ValueObjects.RecurrenceRule(),
             ProjectId = request.ProjectId,
             CreatedBy = userId
         }, cancellationToken);

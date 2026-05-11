@@ -26,6 +26,10 @@ public class CreateTaskItemCommandValidator : AbstractValidator<CreateTaskItemCo
             .When(x => x.StartDate.HasValue && x.DueDate.HasValue)
             .WithMessage("Start date must be before due date");
 
+        RuleFor(x => x.RecurrenceRule)
+            .SetValidator(new RecurrenceRuleDtoValidator()!)
+            .When(x => x.RecurrenceRule is not null);
+
         RuleFor(x => x.GoalId)
             .NotEmpty()
             .When(x => x.GoalId.HasValue)

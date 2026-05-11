@@ -10,6 +10,7 @@ public sealed record UpdateTaskItemCommand(
     string? Notes = null,
     DateTime? DueDate = null,
     DateTime? StartDate = null,
+    RecurrenceRuleDto? RecurrenceRule = null,
     Guid? GoalId = null,
     Guid? ProjectId = null,
     Guid? ParentTaskId = null
@@ -34,6 +35,7 @@ public class UpdateTaskItemCommandHandler(IApplicationDbContext context, ICurren
         if (request.Notes is not null) taskItem.Notes = request.Notes;
         if (request.DueDate.HasValue) taskItem.DueDate = request.DueDate.Value;
         if (request.StartDate.HasValue) taskItem.StartDate = request.StartDate.Value;
+        if (request.RecurrenceRule is not null) taskItem.RecurrenceRule = request.RecurrenceRule.ToValueObject();
         if (request.GoalId.HasValue) taskItem.GoalId = request.GoalId.Value;
         if (request.ProjectId.HasValue) taskItem.ProjectId = request.ProjectId.Value;
         if (request.ParentTaskId.HasValue) taskItem.ParentTaskId = request.ParentTaskId.Value;

@@ -34,6 +34,10 @@ public class UpdateGoalCommandValidator : AbstractValidator<UpdateGoalCommand>
             .When(x => x.Priority.HasValue)
             .WithMessage("Invalid priority value");
 
+        RuleFor(x => x.RecurrenceRule)
+            .SetValidator(new RecurrenceRuleDtoValidator()!)
+            .When(x => x.RecurrenceRule is not null);
+
         RuleFor(x => x.ProjectId)
             .NotEmpty()
             .When(x => x.ProjectId.HasValue)

@@ -26,6 +26,10 @@ public class CreateGoalCommandValidator : AbstractValidator<CreateGoalCommand>
             .IsInEnum()
             .WithMessage("Invalid priority value");
 
+        RuleFor(x => x.RecurrenceRule)
+            .SetValidator(new RecurrenceRuleDtoValidator()!)
+            .When(x => x.RecurrenceRule is not null);
+
         RuleFor(x => x.ProjectId)
             .NotEmpty()
             .When(x => x.ProjectId.HasValue)

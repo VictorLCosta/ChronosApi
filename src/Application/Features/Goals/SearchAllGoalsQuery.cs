@@ -4,7 +4,15 @@ using Domain.Enums;
 
 namespace Application.Features.Goals;
 
-public sealed record GoalDto(Guid Id, string Title, string? Notes, GoalStatus Status, PriorityLevel Priority, Guid? ProjectId);
+public sealed record GoalDto(
+    Guid Id,
+    string Title,
+    string? Notes,
+    GoalStatus Status,
+    PriorityLevel Priority,
+    RecurrenceRuleDto? RecurrenceRule,
+    Guid? ProjectId
+);
 
 public class SearchAllGoalsQuery : IQuery<PagedResponse<GoalDto>>, IPagedQuery, ICacheable
 {
@@ -34,7 +42,7 @@ public class SearchAllGoalsQueryHandler(IApplicationDbContext context, ICurrentU
             .WhereCreatedBy(userId)
             .WhereIf(request.ProjectId.HasValue, x => x.ProjectId == request.ProjectId)
             .WhereIf(!string.IsNullOrWhiteSpace(searchQuery), x => x.SearchVector.Matches(EF.Functions.PlainToTsQuery(searchQuery)))
-            .Select(g => new GoalDto(g.Id, g.Title, g.Notes, g.Status, g.Priority, g.ProjectId))
+            .Select(g => new GoalDto(g.Id, g.Title, g.Notes, g.Status, g.Priority, g.RecurrenceRule.ToDto(), g.ProjectId))
             .ToPagedResponseAsync(request, cancellationToken);
 
         return Result.Success(goals);

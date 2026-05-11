@@ -2,7 +2,17 @@ using Application.Common.Extensions;
 
 namespace Application.Features.TaskItems;
 
-public sealed record TaskItemDto(Guid Id, string Title, string? Notes, DateTime? DueDate, DateTime? StartDate, Guid? GoalId, Guid? ProjectId, Guid? ParentTaskId);
+public sealed record TaskItemDto(
+    Guid Id,
+    string Title,
+    string? Notes,
+    DateTime? DueDate,
+    DateTime? StartDate,
+    RecurrenceRuleDto? RecurrenceRule,
+    Guid? GoalId,
+    Guid? ProjectId,
+    Guid? ParentTaskId
+);
 
 public class SearchAllTaskItemsQuery : IQuery<PagedResponse<TaskItemDto>>, IPagedQuery, ICacheable
 {
@@ -33,7 +43,16 @@ public class SearchAllTaskItemsQueryHandler(IApplicationDbContext context, ICurr
             .WhereCreatedBy(userId)
             .WhereIf(!string.IsNullOrWhiteSpace(request.Q), x => x.SearchVector.Matches(EF.Functions.PlainToTsQuery(searchQuery)))
             .WhereIf(request.ProjectId != null, x => x.ProjectId == request.ProjectId)
-            .Select(t => new TaskItemDto(t.Id, t.Title, t.Notes, t.DueDate, t.StartDate, t.GoalId, t.ProjectId, t.ParentTaskId))
+            .Select(t => new TaskItemDto(
+                t.Id,
+                t.Title,
+                t.Notes,
+                t.DueDate,
+                t.StartDate,
+                t.RecurrenceRule.ToDto(),
+                t.GoalId,
+                t.ProjectId,
+                t.ParentTaskId))
             .ApplySort(request.Sort)
             .ToPagedResponseAsync(request, cancellationToken);
 

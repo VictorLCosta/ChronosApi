@@ -24,7 +24,7 @@ public class GetGoalByIdQueryHandler(IApplicationDbContext context, ICurrentUser
         if (goal is null)
             return Result.NotFound();
 
-        var goalDto = new GoalDto(goal.Id, goal.Title, goal.Notes, goal.Status, goal.Priority, goal.ProjectId);
+        var goalDto = new GoalDto(goal.Id, goal.Title, goal.Notes, goal.Status, goal.Priority, goal.RecurrenceRule.ToDto(), goal.ProjectId);
 
         return Result.Success<GoalDto?>(goalDto);
     }

@@ -12,6 +12,7 @@ public sealed record UpdateGoalCommand(
     string? Notes = null,
     GoalStatus? Status = null,
     PriorityLevel? Priority = null,
+    RecurrenceRuleDto? RecurrenceRule = null,
     Guid? ProjectId = null
 ) : ICommand<UpdateGoalResultDto>;
 
@@ -34,6 +35,7 @@ public class UpdateGoalCommandHandler(IApplicationDbContext context, ICurrentUse
         if (request.Notes is not null) goal.Notes = request.Notes;
         if (request.Status.HasValue) goal.Status = request.Status.Value;
         if (request.Priority.HasValue) goal.Priority = request.Priority.Value;
+        if (request.RecurrenceRule is not null) goal.RecurrenceRule = request.RecurrenceRule.ToValueObject();
         if (request.ProjectId.HasValue) goal.ProjectId = request.ProjectId.Value;
 
         await context.SaveChangesAsync(cancellationToken);

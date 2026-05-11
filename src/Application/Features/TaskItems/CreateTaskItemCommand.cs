@@ -9,6 +9,7 @@ public sealed record CreateTaskItemCommand(
     string? Notes = null,
     DateTime? DueDate = null,
     DateTime? StartDate = null,
+    RecurrenceRuleDto? RecurrenceRule = null,
     Guid? GoalId = null,
     Guid? ProjectId = null,
     Guid? ParentTaskId = null
@@ -28,6 +29,7 @@ public class CreateTaskItemCommandHandler(IApplicationDbContext context, ICurren
             Notes = request.Notes,
             DueDate = request.DueDate,
             StartDate = request.StartDate,
+            RecurrenceRule = request.RecurrenceRule?.ToValueObject(),
             GoalId = request.GoalId,
             ProjectId = request.ProjectId ?? Guid.Empty,
             ParentTaskId = request.ParentTaskId,

@@ -24,7 +24,16 @@ public class GetTaskItemByIdQueryHandler(IApplicationDbContext context, ICurrent
         if (taskItem is null)
             return Result.NotFound();
 
-        var taskItemDto = new TaskItemDto(taskItem.Id, taskItem.Title, taskItem.Notes, taskItem.DueDate, taskItem.StartDate, taskItem.GoalId, taskItem.ProjectId, taskItem.ParentTaskId);
+        var taskItemDto = new TaskItemDto(
+            taskItem.Id,
+            taskItem.Title,
+            taskItem.Notes,
+            taskItem.DueDate,
+            taskItem.StartDate,
+            taskItem.RecurrenceRule.ToDto(),
+            taskItem.GoalId,
+            taskItem.ProjectId,
+            taskItem.ParentTaskId);
 
         return Result.Success<TaskItemDto?>(taskItemDto);
     }
