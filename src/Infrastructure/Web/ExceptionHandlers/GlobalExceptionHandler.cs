@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Infrastructure.Exceptions;
+namespace Infrastructure.Web.ExceptionHandlers;
 
 public class GlobalExceptionHandler(
     ILogger<GlobalExceptionHandler> logger,

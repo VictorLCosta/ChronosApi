@@ -2,7 +2,7 @@ using CrossCutting.Interfaces;
 
 using Microsoft.AspNetCore.Http;
 
-namespace Infrastructure.Middlewares;
+namespace Infrastructure.Web.Middlewares;
 
 public class CurrentUserMiddleware(ICurrentUserService currentUserService) : IMiddleware
 {

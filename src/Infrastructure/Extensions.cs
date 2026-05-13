@@ -1,19 +1,17 @@
 using Application.Common.Interfaces;
 
-using CrossCutting.Interfaces;
-
-using Infrastructure.Auth;
 using Infrastructure.Caching;
-using Infrastructure.Cors;
-using Infrastructure.Exceptions;
 using Infrastructure.Identity;
 using Infrastructure.Logging;
-using Infrastructure.Middlewares;
 using Infrastructure.OpenApi;
 using Infrastructure.OpenTelemetry;
 using Infrastructure.Persistence;
-using Infrastructure.RateLimit;
-using Infrastructure.SecurityHeaders;
+using Infrastructure.Web.Authentication;
+using Infrastructure.Web.Cors;
+using Infrastructure.Web.ExceptionHandlers;
+using Infrastructure.Web.Middlewares;
+using Infrastructure.Web.RateLimiting;
+using Infrastructure.Web.SecurityHeaders;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.ResponseCompression;

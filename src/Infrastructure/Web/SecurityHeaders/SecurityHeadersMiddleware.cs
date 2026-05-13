@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
-namespace Infrastructure.SecurityHeaders;
+namespace Infrastructure.Web.SecurityHeaders;
 
 public class SecurityHeadersMiddleware(IOptions<SecurityHeadersOptions> options) : IMiddleware
 {

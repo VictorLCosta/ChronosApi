@@ -1,4 +1,4 @@
-namespace Infrastructure.Cors;
+namespace Infrastructure.Web.Cors;
 
 public sealed class CorsOptions
 {

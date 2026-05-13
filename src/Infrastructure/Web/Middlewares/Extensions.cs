@@ -1,8 +1,8 @@
-using Infrastructure.SecurityHeaders;
+using Infrastructure.Web.SecurityHeaders;
 
 using Microsoft.AspNetCore.Builder;
 
-namespace Infrastructure.Middlewares;
+namespace Infrastructure.Web.Middlewares;
 
 internal static class Extensions
 {
@@ -13,5 +13,6 @@ internal static class Extensions
 
     internal static IApplicationBuilder UseMiddlewares(this IApplicationBuilder app) =>
         app
-            .UseMiddleware<CurrentUserMiddleware>();
+            .UseMiddleware<CurrentUserMiddleware>()
+            .UseMiddleware<SecurityHeadersMiddleware>();
 }

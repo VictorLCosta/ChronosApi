@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace Infrastructure.RateLimit;
+namespace Infrastructure.Web.RateLimiting;
 
 public static class Extensions
 {

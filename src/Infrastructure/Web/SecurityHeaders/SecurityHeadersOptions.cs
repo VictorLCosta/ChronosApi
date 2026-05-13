@@ -1,4 +1,4 @@
-namespace Infrastructure.SecurityHeaders;
+namespace Infrastructure.Web.SecurityHeaders;
 
 public class SecurityHeadersOptions
 {

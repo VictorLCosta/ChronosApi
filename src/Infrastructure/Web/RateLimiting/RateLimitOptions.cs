@@ -1,4 +1,4 @@
-namespace Infrastructure.RateLimit;
+namespace Infrastructure.Web.RateLimiting;
 
 public class RateLimitOptions
 {
