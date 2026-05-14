@@ -18,39 +18,46 @@ public class GlobalExceptionHandler(
         ArgumentNullException.ThrowIfNull(httpContext);
         ArgumentNullException.ThrowIfNull(exception);
 
-        logger.LogError(exception, "Unhandled exception. TraceId: {TraceId}", httpContext.TraceIdentifier);
-
-        var problemDetails = new ProblemDetails
-        {
-            Instance = httpContext.Request.Path
-        };
+        var problemDetails = new ProblemDetails();
 
         if (exception is FluentValidation.ValidationException fluentException)
         {
-            problemDetails.Title = "one or more validation errors occurred.";
+            logger.LogWarning(exception, "Validation exception. TraceId: {TraceId}", httpContext.TraceIdentifier);
+
+            problemDetails.Status = StatusCodes.Status400BadRequest;
+            problemDetails.Title = "One or more validation errors occurred.";
             problemDetails.Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1";
-            httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-            List<string> validationErrors = [];
-            foreach (var error in fluentException.Errors)
-            {
-                validationErrors.Add(error.ErrorMessage);
-            }
-            problemDetails.Extensions.Add("errors", validationErrors);
+
+            var errors = fluentException.Errors
+                .GroupBy(e => e.PropertyName)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(e => e.ErrorMessage).ToArray());
+
+            problemDetails.Extensions.Add("errors", errors);
+        }
+        else if (exception is UnauthorizedException unauthorizedException)
+        {
+            logger.LogWarning(unauthorizedException, "Unauthorized access. TraceId: {TraceId}", httpContext.TraceIdentifier);
+
+            problemDetails.Status = StatusCodes.Status401Unauthorized;
+            problemDetails.Title = "Unauthorized access.";
+            problemDetails.Type = "https://tools.ietf.org/html/rfc7235#section-3.1";
+            problemDetails.Detail = GetSafeErrorMessage(unauthorizedException, httpContext);
+            
         }
         else
         {
+            logger.LogError(exception, "Unhandled exception. TraceId: {TraceId}", httpContext.TraceIdentifier);
+
             problemDetails = new ProblemDetails
             {
                 Status = 500,
                 Title = "An unexpected error occurred.",
                 Type = "https://tools.ietf.org/html/rfc9110#section-15.6.1",
-                Instance = httpContext.Request.Path,
                 Detail = GetSafeErrorMessage(exception, httpContext)
             };
         }
-
-        problemDetails.Extensions["traceId"] = httpContext.TraceIdentifier;
-        problemDetails.Extensions["timestamp"] = DateTime.UtcNow;
 
         return await problemDetailsService.TryWriteAsync(new ProblemDetailsContext
         {

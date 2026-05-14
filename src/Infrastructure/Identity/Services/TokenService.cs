@@ -6,7 +6,7 @@ using System.Text;
 using Application.Common.Identity.Models;
 using Application.Common.Identity.Services;
 
-using Infrastructure.Auth;
+using Infrastructure.Web.Authentication;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

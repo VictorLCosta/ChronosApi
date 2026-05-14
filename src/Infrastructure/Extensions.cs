@@ -9,6 +9,7 @@ using Infrastructure.Persistence;
 using Infrastructure.Web.Authentication;
 using Infrastructure.Web.Cors;
 using Infrastructure.Web.ExceptionHandlers;
+using Infrastructure.Web.HealthChecks;
 using Infrastructure.Web.Middlewares;
 using Infrastructure.Web.RateLimiting;
 using Infrastructure.Web.SecurityHeaders;
@@ -63,6 +64,8 @@ public static class Extensions
 
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
+        builder.Services.ConfigureHealthChecks();
+
         builder.Services.AddCaching(builder.Configuration);
 
         builder.Services.AddOptions<SecurityHeadersOptions>().BindConfiguration(nameof(SecurityHeadersOptions));
@@ -74,13 +77,16 @@ public static class Extensions
     {
         ArgumentNullException.ThrowIfNull(app);
 
-        app.UseHttpsRedirection();
-        app.UseRouting();
         app.UseAppCors();
+        app.UseHttpsRedirection();
+        app.UseResponseCompression();
+        app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseRateLimit();
         app.UseExceptionHandler();
+
+        app.MapHealthEndpoints();
 
         app.UseAppOpenApi();
 

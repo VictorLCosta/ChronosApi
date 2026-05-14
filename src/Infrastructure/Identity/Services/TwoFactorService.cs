@@ -4,7 +4,7 @@ using Application.Common.Identity.Services;
 
 using Ardalis.Result;
 
-using Infrastructure.Auth;
+using Infrastructure.Web.Authentication;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
