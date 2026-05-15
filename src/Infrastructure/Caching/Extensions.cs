@@ -1,5 +1,4 @@
-using CrossCutting.Interfaces;
-
+using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Configuration;
 
 using StackExchange.Redis;
@@ -10,39 +9,44 @@ public static class Extensions
 {
     public static IServiceCollection AddCaching(this IServiceCollection services, IConfiguration configuration)
     {
+        ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configuration);
 
         services
             .AddOptions<CachingOptions>()
             .BindConfiguration(nameof(CachingOptions));
 
-        services.AddMemoryCache();
-
-        var cacheOptions = configuration.GetSection(nameof(CachingOptions)).Get<CachingOptions>();
-        if (cacheOptions == null || string.IsNullOrEmpty(cacheOptions.Redis))
+        var cacheOptions = configuration.GetSection(nameof(CachingOptions)).Get<CachingOptions>() ?? new CachingOptions();
+        
+        services.AddDistributedMemoryCache();
+        
+        if (!string.IsNullOrEmpty(cacheOptions.Redis))
         {
-            // If no Redis, use memory cache for L2 as well
-            services.AddDistributedMemoryCache();
-            services.AddTransient<ICacheService, HybridCacheService>();
-            return services;
+            services.AddStackExchangeRedisCache(opt =>
+            {
+                var config = ConfigurationOptions.Parse(cacheOptions.Redis);
+                config.AbortOnConnectFail = false;
+
+                if (cacheOptions.EnableSsl.HasValue)
+                {
+                    config.Ssl = cacheOptions.EnableSsl.Value;
+                }
+
+                opt.ConfigurationOptions = config;
+            });
         }
 
-        services.AddStackExchangeRedisCache(options =>
+        services.AddHybridCache(options =>
         {
-            var config = ConfigurationOptions.Parse(cacheOptions.Redis);
-            config.AbortOnConnectFail = true;
-
-            // Only override SSL if explicitly configured
-            if (cacheOptions.EnableSsl.HasValue)
+            options.DefaultEntryOptions = new HybridCacheEntryOptions
             {
-                config.Ssl = cacheOptions.EnableSsl.Value;
-            }
+                Expiration = cacheOptions.DefaultExpiration,            // L1 + L2 total lifetime
+                LocalCacheExpiration = cacheOptions.DefaultLocalCacheExpiration, // L1 only
+            };
 
-            options.ConfigurationOptions = config;
+            options.MaximumKeyLength = cacheOptions.MaximumKeyLength;
+            options.MaximumPayloadBytes = cacheOptions.MaximumPayloadBytes;
         });
-
-        // Register hybrid cache service
-        services.AddTransient<ICacheService, HybridCacheService>();
 
         return services;
     }

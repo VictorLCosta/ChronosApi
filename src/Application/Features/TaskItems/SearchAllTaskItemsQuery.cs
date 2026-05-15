@@ -26,6 +26,8 @@ public class SearchAllTaskItemsQuery : IQuery<PagedResponse<TaskItemDto>>, IPage
     public string CacheKey => $"SearchAllTaskItemsQuery:{PageNumber}:{PageSize}:{Sort}:{Q}:{ProjectId}";
     public int SlidingExpirationInMinutes => 5;
     public int AbsoluteExpirationInMinutes => 5;
+
+    public IReadOnlyCollection<string> CacheTags => ["TaskItems"];
 };
 
 public class SearchAllTaskItemsQueryHandler(IApplicationDbContext context, ICurrentUserService currentUserService) : IQueryHandler<SearchAllTaskItemsQuery, PagedResponse<TaskItemDto>>

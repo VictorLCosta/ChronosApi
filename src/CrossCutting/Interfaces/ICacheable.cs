@@ -6,4 +6,5 @@ public interface ICacheable
     string CacheKey { get; }
     int SlidingExpirationInMinutes { get; }
     int AbsoluteExpirationInMinutes { get; }
+    IReadOnlyCollection<string> CacheTags { get; }
 }

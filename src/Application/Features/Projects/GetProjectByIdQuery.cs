@@ -11,6 +11,8 @@ public sealed record GetProjectByIdQuery(Guid Id) : IQuery<ProjectDto?>, ICachea
     public int SlidingExpirationInMinutes => 10;
 
     public int AbsoluteExpirationInMinutes => 60;
+
+    public IReadOnlyCollection<string> CacheTags => ["Projects"];
 }
 
 public class GetProjectByIdQueryHandler(IApplicationDbContext context, ICurrentUserService currentUserService) : IQueryHandler<GetProjectByIdQuery, ProjectDto?>

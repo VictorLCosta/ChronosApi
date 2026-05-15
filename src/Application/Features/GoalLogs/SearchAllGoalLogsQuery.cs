@@ -12,7 +12,9 @@ public class SearchAllGoalLogsQuery : IQuery<PagedResponse<GoalLogDto>>, IPagedQ
     public string CacheKey => $"SearchAllGoalLogsQuery:{PageNumber}:{PageSize}:{Sort}";
     public int SlidingExpirationInMinutes => 5;
     public int AbsoluteExpirationInMinutes => 5;
-};
+
+    public IReadOnlyCollection<string> CacheTags => ["GoalLogs"];
+}
 
 public class SearchAllGoalLogsQueryHandler(IApplicationDbContext context, ICurrentUserService currentUserService) : IQueryHandler<SearchAllGoalLogsQuery, PagedResponse<GoalLogDto>>
 {

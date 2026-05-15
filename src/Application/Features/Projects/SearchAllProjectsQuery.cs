@@ -18,6 +18,8 @@ public class SearchAllProjectsQuery : IQuery<PagedResponse<ProjectDto>>, IPagedQ
     public int SlidingExpirationInMinutes => 5;
 
     public int AbsoluteExpirationInMinutes => 5;
+
+    public IReadOnlyCollection<string> CacheTags => ["Projects"];
 };
 
 public class SearchAllProjectsQueryHandler(IApplicationDbContext context, ICurrentUserService currentUserService) : IQueryHandler<SearchAllProjectsQuery, PagedResponse<ProjectDto>>

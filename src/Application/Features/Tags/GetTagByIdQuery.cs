@@ -8,6 +8,7 @@ public sealed record GetTagByIdQuery(Guid Id) : IQuery<TagDto?>, ICacheable
     public string CacheKey => $"GetTagByIdQuery:{Id}";
     public int SlidingExpirationInMinutes => 5;
     public int AbsoluteExpirationInMinutes => 5;
+    public IReadOnlyCollection<string> CacheTags => ["Tags"];
 };
 
 public class GetTagByIdQueryHandler(IApplicationDbContext context, ICurrentUserService currentUserService) : IQueryHandler<GetTagByIdQuery, TagDto?>

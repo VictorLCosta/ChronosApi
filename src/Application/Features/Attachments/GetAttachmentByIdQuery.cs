@@ -8,6 +8,7 @@ public sealed record GetAttachmentByIdQuery(Guid Id) : IQuery<AttachmentDto?>, I
     public string CacheKey => $"GetAttachmentByIdQuery:{Id}";
     public int SlidingExpirationInMinutes => 5;
     public int AbsoluteExpirationInMinutes => 5;
+    public IReadOnlyCollection<string> CacheTags => ["Attachments"];
 };
 
 public class GetAttachmentByIdQueryHandler(IApplicationDbContext context, ICurrentUserService currentUserService) : IQueryHandler<GetAttachmentByIdQuery, AttachmentDto?>

@@ -8,6 +8,7 @@ public sealed record GetTaskItemByIdQuery(Guid Id) : IQuery<TaskItemDto?>, ICach
     public string CacheKey => $"GetTaskItemByIdQuery:{Id}";
     public int SlidingExpirationInMinutes => 5;
     public int AbsoluteExpirationInMinutes => 5;
+    public IReadOnlyCollection<string> CacheTags => ["TaskItems"];
 };
 
 public class GetTaskItemByIdQueryHandler(IApplicationDbContext context, ICurrentUserService currentUserService) : IQueryHandler<GetTaskItemByIdQuery, TaskItemDto?>

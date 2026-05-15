@@ -10,6 +10,8 @@ public sealed record GetGoalLogByIdQuery(Guid Id) : IQuery<GoalLogDto?>, ICachea
     public string CacheKey => $"GetGoalLogByIdQuery:{Id}";
     public int SlidingExpirationInMinutes => 5;
     public int AbsoluteExpirationInMinutes => 5;
+
+    public IReadOnlyCollection<string> CacheTags => ["GoalLogs"];
 };
 
 public class GetGoalLogByIdQueryHandler(IApplicationDbContext context, ICurrentUserService currentUserService) : IQueryHandler<GetGoalLogByIdQuery, GoalLogDto?>

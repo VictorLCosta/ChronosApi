@@ -12,6 +12,7 @@ public class SearchAllTagsQuery : IQuery<PagedResponse<TagDto>>, IPagedQuery, IC
     public string CacheKey => $"SearchAllTagsQuery:{PageNumber}:{PageSize}:{Sort}";
     public int SlidingExpirationInMinutes => 5;
     public int AbsoluteExpirationInMinutes => 5;
+    public IReadOnlyCollection<string> CacheTags => ["Tags"];
 };
 
 public class SearchAllTagsQueryHandler(IApplicationDbContext context, ICurrentUserService currentUserService) : IQueryHandler<SearchAllTagsQuery, PagedResponse<TagDto>>

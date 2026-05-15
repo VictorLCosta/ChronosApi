@@ -12,6 +12,7 @@ public class SearchAllRemindersQuery : IQuery<PagedResponse<ReminderDto>>, IPage
     public string CacheKey => $"SearchAllRemindersQuery:{PageNumber}:{PageSize}:{Sort}";
     public int SlidingExpirationInMinutes => 5;
     public int AbsoluteExpirationInMinutes => 5;
+    public IReadOnlyCollection<string> CacheTags => ["Reminders"];
 };
 
 public class SearchAllRemindersQueryHandler(IApplicationDbContext context, ICurrentUserService currentUserService) : IQueryHandler<SearchAllRemindersQuery, PagedResponse<ReminderDto>>

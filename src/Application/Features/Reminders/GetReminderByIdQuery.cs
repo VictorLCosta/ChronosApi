@@ -8,6 +8,8 @@ public sealed record GetReminderByIdQuery(Guid Id) : IQuery<ReminderDto?>, ICach
     public string CacheKey => $"GetReminderByIdQuery:{Id}";
     public int SlidingExpirationInMinutes => 5;
     public int AbsoluteExpirationInMinutes => 5;
+
+    public IReadOnlyCollection<string> CacheTags => ["Reminders"];
 };
 
 public class GetReminderByIdQueryHandler(IApplicationDbContext context, ICurrentUserService currentUserService) : IQueryHandler<GetReminderByIdQuery, ReminderDto?>

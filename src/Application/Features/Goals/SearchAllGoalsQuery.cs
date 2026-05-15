@@ -26,6 +26,7 @@ public class SearchAllGoalsQuery : IQuery<PagedResponse<GoalDto>>, IPagedQuery, 
     public string CacheKey => $"SearchAllGoalsQuery:{PageNumber}:{PageSize}:{Sort}:{Q}";
     public int SlidingExpirationInMinutes => 5;
     public int AbsoluteExpirationInMinutes => 5;
+    public IReadOnlyCollection<string> CacheTags => ["Goals"];
 };
 
 public class SearchAllGoalsQueryHandler(IApplicationDbContext context, ICurrentUserService currentUserService) : IQueryHandler<SearchAllGoalsQuery, PagedResponse<GoalDto>>
