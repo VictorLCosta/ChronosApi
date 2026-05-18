@@ -22,7 +22,7 @@ public class SearchAllTaskItemsQuery : IQuery<PagedResponse<TaskItemDto>>, IPage
     public string? Q { get; set; }
     public Guid? ProjectId { get; set; }
 
-    public bool BypassCache => true;
+    public bool BypassCache => false;
     public string CacheKey => $"SearchAllTaskItemsQuery:{PageNumber}:{PageSize}:{Sort}:{Q}:{ProjectId}";
     public int SlidingExpirationInMinutes => 5;
     public int AbsoluteExpirationInMinutes => 5;

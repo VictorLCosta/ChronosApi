@@ -12,6 +12,15 @@ namespace Infrastructure.Persistence.Interceptors;
 
 public class AuditInterceptor(ICurrentUserService currentUser, TimeProvider timeProvider) : SaveChangesInterceptor
 {
+    private static readonly HashSet<string> IgnoredPropertyNames =
+    [
+        nameof(BaseEntity.Created),
+        nameof(BaseEntity.CreatedBy),
+        nameof(BaseEntity.LastModified),
+        nameof(BaseEntity.LastModifiedBy),
+        "SearchVector"
+    ];
+
     public override ValueTask<int> SavedChangesAsync(SaveChangesCompletedEventData eventData, int result, CancellationToken cancellationToken = default)
     {
         return base.SavedChangesAsync(eventData, result, cancellationToken);
@@ -34,13 +43,14 @@ public class AuditInterceptor(ICurrentUserService currentUser, TimeProvider time
     private async Task PublishAuditTrailsAsync(DbContextEventData eventData, CancellationToken cancellationToken)
     {
         if (eventData.Context == null) return;
-        eventData.Context.ChangeTracker.DetectChanges();
+
         var trails = new List<TrailDto>();
         var utcNow = timeProvider.GetUtcNow();
+        var userId = currentUser.GetUserId();
 
-        foreach (var entry in eventData.Context.ChangeTracker.Entries<BaseEntity>().Where(x => x.State is EntityState.Added or EntityState.Deleted or EntityState.Modified).ToList())
+        foreach (var entry in eventData.Context.ChangeTracker.Entries<BaseEntity>()
+            .Where(x => x.State is EntityState.Added or EntityState.Deleted or EntityState.Modified))
         {
-            var userId = currentUser.GetUserId();
             var trail = new TrailDto()
             {
                 Id = Guid.NewGuid(),
@@ -55,10 +65,17 @@ public class AuditInterceptor(ICurrentUserService currentUser, TimeProvider time
                 {
                     continue;
                 }
+
                 string propertyName = property.Metadata.Name;
+
                 if (property.Metadata.IsPrimaryKey())
                 {
                     trail.KeyValues[propertyName] = property.CurrentValue;
+                    continue;
+                }
+
+                if (ShouldIgnoreProperty(propertyName))
+                {
                     continue;
                 }
 
@@ -93,14 +110,18 @@ public class AuditInterceptor(ICurrentUserService currentUser, TimeProvider time
                 }
             }
 
-            trails.Add(trail);
+            if (HasAuditableChanges(trail))
+            {
+                trails.Add(trail);
+            }
         }
-        if (trails.Count == 0) return;
-        var auditTrails = new List<AuditTrail>();
-        foreach (var trail in trails)
+
+        if (trails.Count == 0)
         {
-            auditTrails.Add(trail.ToAuditTrail());
+            return;
         }
+
+        var auditTrails = trails.Select(static trail => trail.ToAuditTrail()).ToList();
 
         await eventData.Context.Set<AuditTrail>().AddRangeAsync(auditTrails, cancellationToken).ConfigureAwait(false);
     }
@@ -123,6 +144,14 @@ public class AuditInterceptor(ICurrentUserService currentUser, TimeProvider time
             }
         }
     }
+
+    private static bool HasAuditableChanges(TrailDto trail) =>
+        trail.OldValues.Count > 0 ||
+        trail.NewValues.Count > 0 ||
+        trail.ModifiedProperties.Count > 0;
+
+    private static bool ShouldIgnoreProperty(string propertyName) =>
+        IgnoredPropertyNames.Contains(propertyName);
 }
 
 public static class Extensions

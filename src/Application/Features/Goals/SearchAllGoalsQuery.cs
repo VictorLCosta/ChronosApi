@@ -22,7 +22,7 @@ public class SearchAllGoalsQuery : IQuery<PagedResponse<GoalDto>>, IPagedQuery, 
     public string? Q { get; set; }
     public Guid? ProjectId { get; set; }
 
-    public bool BypassCache => true;
+    public bool BypassCache => false;
     public string CacheKey => $"SearchAllGoalsQuery:{PageNumber}:{PageSize}:{Sort}:{Q}";
     public int SlidingExpirationInMinutes => 5;
     public int AbsoluteExpirationInMinutes => 5;

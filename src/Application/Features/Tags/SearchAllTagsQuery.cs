@@ -8,7 +8,7 @@ public class SearchAllTagsQuery : IQuery<PagedResponse<TagDto>>, IPagedQuery, IC
     public int? PageSize { get; set; } = 10;
     public string? Sort { get; set; }
 
-    public bool BypassCache => true;
+    public bool BypassCache => false;
     public string CacheKey => $"SearchAllTagsQuery:{PageNumber}:{PageSize}:{Sort}";
     public int SlidingExpirationInMinutes => 5;
     public int AbsoluteExpirationInMinutes => 5;

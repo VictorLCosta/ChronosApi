@@ -49,15 +49,20 @@ public class IdentityService(
         var now = timeProvider.GetUtcNow().UtcDateTime;
         var hashedRefreshToken = HashRefreshToken(refreshToken);
 
-        var existingActiveTokens = await dbContext.RefreshTokens
+        var tokenIdsToRevoke = await dbContext.RefreshTokens
             .Where(rt => rt.UserId == user.Id && rt.RevokedAtUtc == null && rt.ExpiresAtUtc > now)
             .OrderByDescending(rt => rt.CreatedAtUtc)
+            .Skip(4)
+            .Select(rt => rt.Id)
             .ToListAsync(ct);
 
-        foreach (var token in existingActiveTokens.Skip(4))
+        if (tokenIdsToRevoke.Count > 0)
         {
-            token.RevokedAtUtc = now;
-            token.RevokedReason = "Active session limit reached.";
+            await dbContext.RefreshTokens
+                .Where(rt => tokenIdsToRevoke.Contains(rt.Id))
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(rt => rt.RevokedAtUtc, now)
+                    .SetProperty(rt => rt.RevokedReason, "Active session limit reached."), ct);
         }
 
         var entry = new RefreshToken
@@ -158,33 +163,19 @@ public class IdentityService(
 
     private async Task PruneExpiredRefreshTokensAsync(string userId, DateTime now, CancellationToken ct)
     {
-        var staleTokens = await dbContext.RefreshTokens
+        await dbContext.RefreshTokens
             .Where(rt => rt.UserId == userId && (rt.ExpiresAtUtc <= now || rt.RevokedAtUtc != null))
-            .ToListAsync(ct);
-
-        if (staleTokens.Count > 0)
-        {
-            dbContext.RefreshTokens.RemoveRange(staleTokens);
-        }
+            .ExecuteDeleteAsync(ct);
     }
 
     private async Task RevokeTokenFamilyAsync(string userId, string familyId, string reason, CancellationToken ct)
     {
         var now = timeProvider.GetUtcNow().UtcDateTime;
-        var familyTokens = await dbContext.RefreshTokens
+        await dbContext.RefreshTokens
             .Where(rt => rt.UserId == userId && rt.FamilyId == familyId && rt.RevokedAtUtc == null)
-            .ToListAsync(ct);
-
-        foreach (var token in familyTokens)
-        {
-            token.RevokedAtUtc = now;
-            token.RevokedReason = reason;
-        }
-
-        if (familyTokens.Count > 0)
-        {
-            await dbContext.SaveChangesAsync(ct);
-        }
+            .ExecuteUpdateAsync(setters => setters
+                .SetProperty(rt => rt.RevokedAtUtc, now)
+                .SetProperty(rt => rt.RevokedReason, reason), ct);
     }
 
     private static string HashRefreshToken(string refreshToken)
