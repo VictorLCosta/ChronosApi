@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Domain.Common;
 
 public abstract class BaseEntity
@@ -11,4 +13,7 @@ public abstract class BaseEntity
     public DateTimeOffset? LastModified { get; set; }
 
     public string? LastModifiedBy { get; set; }
+
+    [Timestamp]
+    public uint RowVersion { get; set; }
 }

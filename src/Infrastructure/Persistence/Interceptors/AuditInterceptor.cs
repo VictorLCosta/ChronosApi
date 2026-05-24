@@ -1,6 +1,7 @@
 using CrossCutting.Interfaces;
 
 using Domain.Common;
+using Domain.Contracts;
 
 using Infrastructure.Audit;
 
@@ -12,6 +13,8 @@ namespace Infrastructure.Persistence.Interceptors;
 
 public class AuditInterceptor(ICurrentUserService currentUser, TimeProvider timeProvider) : SaveChangesInterceptor
 {
+    private static readonly AsyncLocal<bool> _isSaving = new();
+
     private static readonly HashSet<string> IgnoredPropertyNames =
     [
         nameof(BaseEntity.Created),
@@ -21,23 +24,30 @@ public class AuditInterceptor(ICurrentUserService currentUser, TimeProvider time
         "SearchVector"
     ];
 
-    public override ValueTask<int> SavedChangesAsync(SaveChangesCompletedEventData eventData, int result, CancellationToken cancellationToken = default)
+    public override async ValueTask<int> SavedChangesAsync(SaveChangesCompletedEventData eventData, int result, CancellationToken cancellationToken = default)
     {
-        return base.SavedChangesAsync(eventData, result, cancellationToken);
-    }
-
-    public override Task SaveChangesFailedAsync(DbContextErrorEventData eventData, CancellationToken cancellationToken = default)
-    {
-        return base.SaveChangesFailedAsync(eventData, cancellationToken);
+        return await base.SavedChangesAsync(eventData, result, cancellationToken).ConfigureAwait(false);
     }
 
     public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(eventData);
 
-        UpdateEntities(eventData.Context);
-        await PublishAuditTrailsAsync(eventData, cancellationToken);
-        return await base.SavingChangesAsync(eventData, result, cancellationToken);
+        if (_isSaving.Value)
+        {
+            return await base.SavingChangesAsync(eventData, result, cancellationToken).ConfigureAwait(false);
+        }
+
+        try
+        {
+            UpdateEntities(eventData.Context);
+            await PublishAuditTrailsAsync(eventData, cancellationToken);
+            return await base.SavingChangesAsync(eventData, result, cancellationToken);
+        }
+        finally
+        {
+            _isSaving.Value = false;
+        }
     }
 
     private async Task PublishAuditTrailsAsync(DbContextEventData eventData, CancellationToken cancellationToken)
@@ -94,7 +104,20 @@ public class AuditInterceptor(ICurrentUserService currentUser, TimeProvider time
                     case EntityState.Modified:
                         if (property.IsModified)
                         {
-                            if (property.OriginalValue?.Equals(property.CurrentValue) == false)
+                            var isTrashOperation =
+                                entry.Entity is ITrashable &&
+                                property.Metadata.Name == nameof(ITrashable.IsTrashed) &&
+                                property.OriginalValue is false &&
+                                property.CurrentValue is true;
+
+                            if (isTrashOperation)
+                            {
+                                trail.ModifiedProperties.Add(propertyName);
+                                trail.Type = AuditType.Delete;
+                                trail.OldValues[propertyName] = property.OriginalValue;
+                                trail.NewValues[propertyName] = property.CurrentValue;
+                            }
+                            else if (property.OriginalValue?.Equals(property.CurrentValue) == false)
                             {
                                 trail.ModifiedProperties.Add(propertyName);
                                 trail.Type = AuditType.Update;
@@ -129,19 +152,23 @@ public class AuditInterceptor(ICurrentUserService currentUser, TimeProvider time
     public void UpdateEntities(DbContext? context)
     {
         if (context == null) return;
+
+        var utcNow = timeProvider.GetUtcNow();
+        var currentUserId = currentUser.GetUserId();
+
         foreach (var entry in context.ChangeTracker.Entries<BaseEntity>())
         {
-            var utcNow = timeProvider.GetUtcNow();
             if (entry.State is EntityState.Added or EntityState.Modified || entry.HasChangedOwnedEntities())
             {
                 if (entry.State == EntityState.Added)
                 {
-                    entry.Entity.CreatedBy = currentUser.GetUserId();
+                    entry.Entity.CreatedBy = currentUserId;
                     entry.Entity.Created = utcNow;
                 }
-                entry.Entity.LastModifiedBy = currentUser.GetUserId();
+                entry.Entity.LastModifiedBy = currentUserId;
                 entry.Entity.LastModified = utcNow;
             }
+
         }
     }
 

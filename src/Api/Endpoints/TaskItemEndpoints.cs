@@ -38,5 +38,32 @@ internal static class TaskItemEndpoints
             return result.ToMinimalApiResult();
         })
         .WithName("CreateTaskItem");
+
+        group.MapDelete("/{id}", async (Guid id, IMediator sender) =>
+        {
+            var result = await sender.Send(new DeleteTaskItemCommand(id));
+
+            return result.ToMinimalApiResult();
+        })
+        .WithName("DeleteTaskItem")
+        .Produces(StatusCodes.Status204NoContent);
+
+        group.MapPatch("trash/{id}", async (Guid id, IMediator sender) =>
+        {
+            var result = await sender.Send(new TrashTaskItemCommand(id));
+
+            return result.ToMinimalApiResult();
+        })
+        .WithName("TrashTaskItem")
+        .Produces(StatusCodes.Status204NoContent);
+
+        group.MapPatch("restore/{id}", async (Guid id, IMediator sender) =>
+        {
+            var result = await sender.Send(new RestoreTaskItemCommand(id));
+
+            return result.ToMinimalApiResult();
+        })
+        .WithName("RestoreTaskItem")
+        .Produces(StatusCodes.Status204NoContent);
     }
 }

@@ -2,7 +2,7 @@ namespace Infrastructure.Caching;
 
 public sealed class CachingOptions
 {
-     /// <summary>Redis connection string. If empty, the L2 distributed cache falls back to in-memory.</summary>
+    /// <summary>Redis connection string. If empty, the L2 distributed cache falls back to in-memory.</summary>
     public string Redis { get; set; } = string.Empty;
 
     /// <summary>

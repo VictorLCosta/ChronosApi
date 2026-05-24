@@ -32,6 +32,8 @@ public class GoalConfiguration : IEntityTypeConfiguration<Goal>
         // Value Object - RecurrenceRule
         builder.ComplexProperty(g => g.RecurrenceRule);
 
+        builder.HasQueryFilter(t => !t.IsTrashed);
+
         // Relationships
         builder.HasOne(g => g.Project)
             .WithMany(p => p.Goals)
@@ -58,6 +60,10 @@ public class GoalConfiguration : IEntityTypeConfiguration<Goal>
         builder.HasIndex(g => g.Status);
         builder.HasIndex(g => g.Priority);
         builder.HasIndex(g => g.Created);
+
+        builder
+            .HasIndex(x => x.IsTrashed)
+            .HasFilter("\"IsTrashed\" = false");
 
         // Full-Text Search Index
         builder.HasGeneratedTsVectorColumn(

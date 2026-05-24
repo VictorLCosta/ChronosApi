@@ -17,9 +17,9 @@ public static class Extensions
             .BindConfiguration(nameof(CachingOptions));
 
         var cacheOptions = configuration.GetSection(nameof(CachingOptions)).Get<CachingOptions>() ?? new CachingOptions();
-        
+
         services.AddDistributedMemoryCache();
-        
+
         if (!string.IsNullOrEmpty(cacheOptions.Redis))
         {
             services.AddStackExchangeRedisCache(opt =>

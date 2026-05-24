@@ -32,14 +32,14 @@ public class CachingBehavior<TMessage, TResponse>(
         };
 
         response = await cache.GetOrCreateAsync(
-            message.CacheKey, 
+            message.CacheKey,
             async ct =>
             {
                 logger.LogInformation("Cache miss for key {CacheKey}", message.CacheKey);
                 return await next(message, ct);
-            }, 
-            options, 
-            message.CacheTags, 
+            },
+            options,
+            message.CacheTags,
             cancellationToken
         );
 

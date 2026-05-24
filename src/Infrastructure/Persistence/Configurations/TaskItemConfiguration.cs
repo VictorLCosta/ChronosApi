@@ -29,6 +29,8 @@ public class TaskItemConfiguration : IEntityTypeConfiguration<TaskItem>
         // Value Object - RecurrenceRule
         builder.ComplexProperty(g => g.RecurrenceRule);
 
+        builder.HasQueryFilter(t => !t.IsTrashed);
+
         // Relationships
         builder.HasOne(t => t.Goal)
             .WithMany(g => g.Tasks)
@@ -68,6 +70,10 @@ public class TaskItemConfiguration : IEntityTypeConfiguration<TaskItem>
         builder.HasIndex(t => t.GoalId);
         builder.HasIndex(t => t.ParentTaskId);
         builder.HasIndex(t => t.DueDate);
+
+        builder
+            .HasIndex(x => x.IsTrashed)
+            .HasFilter("\"IsTrashed\" = false");
 
         // Full-Text Search Index
         builder.HasGeneratedTsVectorColumn(

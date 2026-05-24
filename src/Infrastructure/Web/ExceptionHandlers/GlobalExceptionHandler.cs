@@ -44,7 +44,7 @@ public class GlobalExceptionHandler(
             problemDetails.Title = "Unauthorized access.";
             problemDetails.Type = "https://tools.ietf.org/html/rfc7235#section-3.1";
             problemDetails.Detail = GetSafeErrorMessage(unauthorizedException, httpContext);
-            
+
         }
         else
         {

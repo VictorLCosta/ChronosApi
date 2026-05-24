@@ -38,5 +38,32 @@ internal static class GoalEndpoints
             return result.ToMinimalApiResult();
         })
         .WithName("CreateGoal");
+
+        group.MapDelete("/{id}", async (Guid id, IMediator sender) =>
+        {
+            var result = await sender.Send(new DeleteGoalCommand(id));
+
+            return result.ToMinimalApiResult();
+        })
+        .WithName("DeleteGoal")
+        .Produces(StatusCodes.Status204NoContent);
+
+        group.MapPatch("trash/{id}", async (Guid id, IMediator sender) =>
+        {
+            var result = await sender.Send(new TrashGoalCommand(id));
+
+            return result.ToMinimalApiResult();
+        })
+        .WithName("TrashGoal")
+        .Produces(StatusCodes.Status204NoContent);
+
+        group.MapPatch("restore/{id}", async (Guid id, IMediator sender) =>
+        {
+            var result = await sender.Send(new RestoreGoalCommand(id));
+
+            return result.ToMinimalApiResult();
+        })
+        .WithName("RestoreGoal")
+        .Produces(StatusCodes.Status204NoContent);
     }
 }
