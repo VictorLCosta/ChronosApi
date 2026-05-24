@@ -10,6 +10,7 @@ using Infrastructure.Web.Authentication;
 using Infrastructure.Web.Cors;
 using Infrastructure.Web.ExceptionHandlers;
 using Infrastructure.Web.HealthChecks;
+using Infrastructure.Web.Idempotency;
 using Infrastructure.Web.Middlewares;
 using Infrastructure.Web.RateLimiting;
 using Infrastructure.Web.SecurityHeaders;
@@ -68,7 +69,11 @@ public static class Extensions
 
         builder.Services.AddCaching(builder.Configuration);
 
-        builder.Services.AddOptions<SecurityHeadersOptions>().BindConfiguration(nameof(SecurityHeadersOptions));
+        builder.Services.AddIdempotency(builder.Configuration);
+
+        builder.Services
+            .AddOptions<SecurityHeadersOptions>()
+            .BindConfiguration(nameof(SecurityHeadersOptions));
 
         return builder;
     }

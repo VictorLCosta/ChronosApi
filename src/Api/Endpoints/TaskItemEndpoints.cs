@@ -2,6 +2,8 @@ using Application.Features.TaskItems;
 
 using Ardalis.Result.AspNetCore;
 
+using Infrastructure.Web.Idempotency;
+
 using Mediator;
 
 namespace Api.Endpoints;
@@ -37,7 +39,8 @@ internal static class TaskItemEndpoints
 
             return result.ToMinimalApiResult();
         })
-        .WithName("CreateTaskItem");
+        .WithName("CreateTaskItem")
+        .WithIdempotency();
 
         group.MapDelete("/{id}", async (Guid id, IMediator sender) =>
         {

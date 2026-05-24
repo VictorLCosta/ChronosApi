@@ -2,6 +2,8 @@ using Application.Features.Goals;
 
 using Ardalis.Result.AspNetCore;
 
+using Infrastructure.Web.Idempotency;
+
 using Mediator;
 
 namespace Api.Endpoints;
@@ -37,7 +39,8 @@ internal static class GoalEndpoints
 
             return result.ToMinimalApiResult();
         })
-        .WithName("CreateGoal");
+        .WithName("CreateGoal")
+        .WithIdempotency();
 
         group.MapDelete("/{id}", async (Guid id, IMediator sender) =>
         {
