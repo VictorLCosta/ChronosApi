@@ -4,8 +4,8 @@ using NetArchTest.Rules;
 
 namespace ArchitectureTests;
 
-public class ApplicationTests
-{   
+internal class ApplicationTests
+{
     [Fact]
     public void ApplicationShouldNotHaveDependencyOnInfrastructure()
     {
