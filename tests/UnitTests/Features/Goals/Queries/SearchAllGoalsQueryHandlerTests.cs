@@ -10,7 +10,7 @@ using UnitTests.Common.Fixtures;
 
 namespace UnitTests.Features.Goals.Queries;
 
-internal sealed class SearchAllGoalsQueryTests
+public sealed class SearchAllGoalsQueryTests
 {
     [Fact]
     public async Task ShouldReturn_EmptyListWhenNoGoalsExist()
