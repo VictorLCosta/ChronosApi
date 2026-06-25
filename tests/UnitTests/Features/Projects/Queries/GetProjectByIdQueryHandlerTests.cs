@@ -6,7 +6,7 @@ using UnitTests.Common.Fixtures;
 
 namespace UnitTests.Features.Projects.Queries;
 
-public sealed class GetProjectByIdQueryHandlerTests
+internal sealed class GetProjectByIdQueryHandlerTests
 {
     [Fact]
     public async Task Handle_ShouldReturnProjectDto_WhenProjectBelongsToCurrentUser()
