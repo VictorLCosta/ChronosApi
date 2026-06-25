@@ -16,7 +16,7 @@
 		<AnalysisMode>All</AnalysisMode>
 
     <NoWarn>
-      CA2007;CA1040;CA1848;CA1724;CA1873;CA1819;CA1861;CA1812;CA1305;CA1031;CA1707
+      CA2007;CA1040;CA1848;CA1724;CA1873;CA1819;CA1861;CA1812;CA1305;CA1031;CA1707;CA1515
     </NoWarn>
 
     <!-- Prevent MSBuild from excluding common folders (optional) -->

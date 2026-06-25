@@ -1,6 +1,6 @@
 namespace UnitTests.Features.Goals.Commands;
 
-internal sealed class CreateGoalHandlerTests
+public sealed class CreateGoalHandlerTests
 {
 
 }
