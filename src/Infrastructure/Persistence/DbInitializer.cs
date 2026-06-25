@@ -10,16 +10,20 @@ using Infrastructure.Identity;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 namespace Infrastructure.Persistence;
 
 public class DbInitializer(
     ApplicationDbContext context,
     RoleManager<AppRole> roleManager,
-    UserManager<AppUser> userManager) : IDbInitializer
+    UserManager<AppUser> userManager,
+    IHostEnvironment environment) : IDbInitializer
 {
     public async Task MigrateAsync(CancellationToken cancellationToken)
-    {
+    {   
+        if (environment.IsProduction()) return;
+
         if ((await context.Database.GetPendingMigrationsAsync(cancellationToken).ConfigureAwait(false)).Any())
         {
             await context.Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
@@ -28,6 +32,8 @@ public class DbInitializer(
 
     public async Task SeedAsync(CancellationToken cancellationToken)
     {
+        if (environment.IsProduction()) return;
+
         await SeedUsersAsync(cancellationToken);
 
         // Seed some sample domain data if none exists
