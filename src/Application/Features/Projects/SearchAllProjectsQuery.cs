@@ -37,8 +37,8 @@ public class SearchAllProjectsQueryHandler(IApplicationDbContext context, ICurre
             .WhereIf(!string.IsNullOrWhiteSpace(request.Q), p => p.SearchVector.Matches(EF.Functions.PlainToTsQuery(searchQuery)))
             .Where(p => p.CreatedBy == userId)
             .OrderByDescending(p => p.Created)
-            .Select(p => new ProjectDto(p.Id, p.Title))
             .ApplySort(request.Sort)
+            .Select(p => new ProjectDto(p.Id, p.Title))
             .ToPagedResponseAsync(request, cancellationToken);
 
         return Result.Success(projects);
