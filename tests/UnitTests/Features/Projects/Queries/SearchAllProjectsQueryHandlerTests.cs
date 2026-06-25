@@ -6,7 +6,7 @@ using UnitTests.Common.Fixtures;
 
 namespace UnitTests.Features.Projects.Queries;
 
-internal sealed class SearchAllProjectsQueryHandlerTests
+public sealed class SearchAllProjectsQueryHandlerTests
 {
     [Fact]
     public async Task Handle_ShouldReturnOnlyProjectsOwnedByCurrentUser()
