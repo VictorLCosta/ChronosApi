@@ -4,7 +4,7 @@ using NetArchTest.Rules;
 
 namespace ArchitectureTests;
 
-internal class DomainTests
+public class DomainTests
 {
     [Fact]
     public void DomainShouldNotHaveDependencyOnApplication()
