@@ -5,7 +5,7 @@ using NetArchTest.Rules;
 namespace ArchitectureTests;
 
 public class ApplicationTests
-{   
+{
     [Fact]
     public void ApplicationShouldNotHaveDependencyOnInfrastructure()
     {

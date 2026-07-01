@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 
 using UnitTests.Common.Helpers;
 
