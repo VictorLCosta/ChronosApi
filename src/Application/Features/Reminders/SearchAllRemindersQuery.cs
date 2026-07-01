@@ -27,8 +27,8 @@ public class SearchAllRemindersQueryHandler(IApplicationDbContext context, ICurr
             .AsNoTracking()
             .WhereCreatedBy(userId)
             .OrderByDescending(r => r.RemindAt)
-            .Select(r => new ReminderDto(r.Id, r.RemindAt, r.IsSent, r.OffsetMinutes, r.TaskItemId, r.GoalId))
             .ApplySort(request.Sort)
+            .Select(r => new ReminderDto(r.Id, r.RemindAt, r.IsSent, r.OffsetMinutes, r.TaskItemId, r.GoalId))
             .ToPagedResponseAsync(request, cancellationToken);
 
         return Result.Success(reminders);
