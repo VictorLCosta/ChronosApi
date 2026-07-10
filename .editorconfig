@@ -16,7 +16,7 @@ indent_size = 2
 [*.{props,targets,config,nuspec}]
 indent_size = 2
 
-[*.json]
+[*.{json,tf}]
 indent_size = 2
 
 # C# files
