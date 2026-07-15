@@ -178,30 +178,6 @@ O repositorio contem:
 - testes unitarios de handlers e regras de negocio
 - testes de arquitetura para proteger a separacao entre camadas
 
-## Rotas Interessantes Para Explorar
-
-Algumas rotas uteis para validar a API rapidamente:
-
-```http
-POST   /api/identity/register
-POST   /api/identity/login
-POST   /api/identity/refresh
-GET    /api/identity/me
-
-GET    /api/projects
-POST   /api/projects
-GET    /api/projects/{id}/goals
-GET    /api/projects/{id}/tasks
-
-GET    /api/goals
-POST   /api/goals
-PATCH  /api/goals/trash/{id}
-PATCH  /api/goals/restore/{id}
-
-GET    /health/live
-GET    /health/ready
-```
-
 ## Padroes Do Projeto
 
 Algumas configuracoes do repositorio mostram a preocupacao com qualidade:
