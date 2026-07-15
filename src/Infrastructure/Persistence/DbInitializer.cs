@@ -21,7 +21,7 @@ public class DbInitializer(
     IHostEnvironment environment) : IDbInitializer
 {
     public async Task MigrateAsync(CancellationToken cancellationToken)
-    {   
+    {
         if (environment.IsProduction()) return;
 
         if ((await context.Database.GetPendingMigrationsAsync(cancellationToken).ConfigureAwait(false)).Any())
