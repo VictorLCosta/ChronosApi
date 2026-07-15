@@ -1,0 +1,32 @@
+aws_region = "us-east-1"
+
+vpc_cidr = "10.20.0.0/16"
+
+public_subnets = {
+  a = {
+    cidr_block = "10.20.0.0/24"
+    az         = "us-east-1a"
+  }
+  b = {
+    cidr_block = "10.20.1.0/24"
+    az         = "us-east-1b"
+  }
+}
+
+private_subnets = {
+  a = {
+    cidr_block = "10.20.10.0/24"
+    az         = "us-east-1a"
+  }
+  b = {
+    cidr_block = "10.20.11.0/24"
+    az         = "us-east-1b"
+  }
+}
+
+attachments_bucket_name = "chronos-api-dev-attachments-example"
+container_image         = "123456789012.dkr.ecr.us-east-1.amazonaws.com/chronos-api:dev"
+
+db_password = "change-me-dev-password"
+jwt_key     = "change-me-dev-jwt-key-with-at-least-32-characters"
+redis_auth_token = "change-me-dev-redis-auth-token"

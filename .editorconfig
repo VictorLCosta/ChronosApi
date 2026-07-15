@@ -16,7 +16,7 @@ indent_size = 2
 [*.{props,targets,config,nuspec}]
 indent_size = 2
 
-[*.json]
+[*.{json,tf}]
 indent_size = 2
 
 # C# files
@@ -195,6 +195,10 @@ csharp_space_between_square_brackets = false
 # Wrapping preferences
 csharp_preserve_single_line_blocks = true
 csharp_preserve_single_line_statements = true
+
+# Test projects keep test classes public so runners can discover them reliably.
+[tests/**/*.cs]
+dotnet_diagnostic.CA1515.severity = none
 
 #### Naming styles ####
 [*.{cs,vb}]
