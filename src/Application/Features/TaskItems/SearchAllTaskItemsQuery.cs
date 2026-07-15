@@ -45,6 +45,7 @@ public class SearchAllTaskItemsQueryHandler(IApplicationDbContext context, ICurr
             .WhereCreatedBy(userId)
             .WhereIf(!string.IsNullOrWhiteSpace(request.Q), x => x.SearchVector.Matches(EF.Functions.PlainToTsQuery(searchQuery)))
             .WhereIf(request.ProjectId != null, x => x.ProjectId == request.ProjectId)
+            .ApplySort(request.Sort)
             .Select(t => new TaskItemDto(
                 t.Id,
                 t.Title,
@@ -55,7 +56,6 @@ public class SearchAllTaskItemsQueryHandler(IApplicationDbContext context, ICurr
                 t.GoalId,
                 t.ProjectId,
                 t.ParentTaskId))
-            .ApplySort(request.Sort)
             .ToPagedResponseAsync(request, cancellationToken);
 
         return Result.Success(taskItems);

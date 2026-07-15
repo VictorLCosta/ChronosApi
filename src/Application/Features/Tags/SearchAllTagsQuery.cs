@@ -27,8 +27,8 @@ public class SearchAllTagsQueryHandler(IApplicationDbContext context, ICurrentUs
             .AsNoTracking()
             .WhereCreatedBy(userId)
             .OrderBy(t => t.Name)
-            .Select(t => new TagDto(t.Id, t.Name))
             .ApplySort(request.Sort)
+            .Select(t => new TagDto(t.Id, t.Name))
             .ToPagedResponseAsync(request, cancellationToken);
 
         return Result.Success(tags);

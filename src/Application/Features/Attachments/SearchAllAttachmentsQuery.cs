@@ -21,6 +21,7 @@ public class SearchAllAttachmentsQueryHandler(IApplicationDbContext context, ICu
             .AsNoTracking()
             .WhereCreatedBy(userId)
             .OrderByDescending(a => a.Created)
+            .ApplySort(request.Sort)
             .Select(a => new AttachmentDto(
                 a.Id,
                 a.FileName,
@@ -28,7 +29,6 @@ public class SearchAllAttachmentsQueryHandler(IApplicationDbContext context, ICu
                 a.SizeBytes,
                 a.StorageUrl,
                 a.TaskItemId))
-            .ApplySort(request.Sort)
             .ToPagedResponseAsync(request, cancellationToken);
 
         return Result.Success(attachments);
