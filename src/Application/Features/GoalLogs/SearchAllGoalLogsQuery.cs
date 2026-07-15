@@ -28,8 +28,8 @@ public class SearchAllGoalLogsQueryHandler(IApplicationDbContext context, ICurre
             .AsNoTracking()
             .WhereCreatedBy(userId)
             .OrderByDescending(gl => gl.Date)
-            .Select(gl => new GoalLogDto(gl.Id, gl.Date, gl.Notes, gl.Completed, gl.GoalId))
             .ApplySort(request.Sort)
+            .Select(gl => new GoalLogDto(gl.Id, gl.Date, gl.Notes, gl.Completed, gl.GoalId))
             .ToPagedResponseAsync(request, cancellationToken);
 
         return Result.Success(goalLogs);
